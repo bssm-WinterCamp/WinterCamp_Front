@@ -8,6 +8,7 @@ export interface RecordRegisterRequest {
   description: string;
   amount: number;
   price: number;
+  image_url: string;
 }
 
 export interface RecordRegisterResponse {

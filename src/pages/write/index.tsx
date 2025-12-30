@@ -150,7 +150,8 @@ const WritePage = () => {
         fresh: formData.freshness,
         description: formData.description,
         amount: parseInt(formData.quantity),
-        price: parseInt(formData.price)
+        price: parseInt(formData.price),
+        image_url: imageUrl
       });
 
       alert('수산물이 등록되었습니다!');
