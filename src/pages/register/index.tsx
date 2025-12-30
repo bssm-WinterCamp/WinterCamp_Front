@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Icon } from '@iconify/react';
 import { fishermanAPI } from '../../api/fisherman';
-import { fileAPI } from '../../api/file';
 import { useUserStore } from '../../store';
 import * as S from './style';
 
@@ -55,9 +54,7 @@ const RegisterPage = () => {
     district: '',
     village: ''
   });
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
-  const [imageFile, setImageFile] = useState<File | null>(null);
-  const [isUploading, setIsUploading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [isCityDropdownOpen, setIsCityDropdownOpen] = useState(false);
   const [isDistrictDropdownOpen, setIsDistrictDropdownOpen] = useState(false);
   const [isVillageDropdownOpen, setIsVillageDropdownOpen] = useState(false);
@@ -82,31 +79,11 @@ const RegisterPage = () => {
     }));
   };
 
-  const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setImageFile(file);
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImagePreview(reader.result as string);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!imageFile) {
-      alert('사진을 선택해주세요!');
-      return;
-    }
-
     try {
-      setIsUploading(true);
-
-      // 이미지 먼저 업로드
-      const uploadResult = await fileAPI.uploadImage(imageFile);
+      setIsLoading(true);
       
       // 어민 등록
       if (!user) {
@@ -120,7 +97,7 @@ const RegisterPage = () => {
         group: "1", // 그룹은 1로 고정
         region: `${formData.city} ${formData.district}`,
         phoneNumber: formData.phone,
-        image: uploadResult.url
+        image: "" // 이미지 없음
       });
       
       // store에 fisherman_id와 role 업데이트
@@ -136,7 +113,7 @@ const RegisterPage = () => {
       alert('등록에 실패했습니다. 다시 시도해주세요.');
       console.error('Register error:', error);
     } finally {
-      setIsUploading(false);
+      setIsLoading(false);
     }
   };
 
@@ -162,31 +139,6 @@ const RegisterPage = () => {
       </S.Header>
 
       <S.Form onSubmit={handleSubmit}>
-        <S.InputGroup>
-          <S.Label>사진 선택</S.Label>
-          <S.ImageUploadWrapper>
-            {imagePreview ? (
-              <S.CircleImagePreview onClick={() => document.getElementById('registerImageInput')?.click()}>
-                <S.CirclePreviewImage src={imagePreview} alt="프로필" />
-              </S.CircleImagePreview>
-            ) : (
-              <S.CircleImageUploadLabel htmlFor="registerImageInput">
-                <S.CircleUploadPlaceholder>
-                  <Icon icon="material-symbols:photo-camera-outline" width="40" height="40" color="#CCCCCC" />
-                  <S.CircleUploadText>박스를 눌러 사진을 고르세요</S.CircleUploadText>
-                </S.CircleUploadPlaceholder>
-              </S.CircleImageUploadLabel>
-            )}
-            <S.ImageInput
-              id="registerImageInput"
-              type="file"
-              accept="image/*"
-              onChange={handleImageChange}
-              disabled={isUploading}
-            />
-          </S.ImageUploadWrapper>
-        </S.InputGroup>
-
         <S.InputGroup>
           <S.Label>지역(시)</S.Label>
           <S.DropdownWrapper>
@@ -304,8 +256,8 @@ const RegisterPage = () => {
           />
         </S.InputGroup>
 
-        <S.SubmitButton type="submit" disabled={isUploading}>
-          {isUploading ? (
+        <S.SubmitButton type="submit" disabled={isLoading}>
+          {isLoading ? (
             <S.ButtonContent>
               <S.ButtonSpinner />
               <span>등록 중...</span>

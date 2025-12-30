@@ -45,7 +45,7 @@ interface SeafoodProduct {
   title: string;
   category: string;
   image: string | null;
-  status: string;
+  amount: string;
   fisherman: string;
   location: string;
   hashtag: string;
@@ -60,7 +60,7 @@ const MOCK_PRODUCTS: SeafoodProduct[] = [
     title: '싱싱한 광어 30마리 팝니다.',
     category: '물고기',
     image: 'https://images.unsplash.com/photo-1544943910-4c1dc44aab44?w=400',
-    status: '수량중',
+    amount: '30',
     fisherman: '김어민',
     location: '부산광역시 기장군',
     hashtag: '해피해피해피마을',
@@ -71,7 +71,7 @@ const MOCK_PRODUCTS: SeafoodProduct[] = [
     title: '싱싱한 광어 30마리 팝니다.',
     category: '물고기',
     image: 'https://images.unsplash.com/photo-1544943910-4c1dc44aab44?w=400',
-    status: '수량중',
+    amount: '25',
     fisherman: '김어민',
     location: '부산광역시 기장군',
     hashtag: '해피해피해피마을',
@@ -82,7 +82,7 @@ const MOCK_PRODUCTS: SeafoodProduct[] = [
     title: '싱싱한 광어 30마리 팝니다.',
     category: '물고기',
     image: 'https://images.unsplash.com/photo-1544943910-4c1dc44aab44?w=400',
-    status: '수량중',
+    amount: '15',
     fisherman: '김어민',
     location: '부산광역시 기장군',
     hashtag: '해피해피해피마을',
@@ -93,7 +93,7 @@ const MOCK_PRODUCTS: SeafoodProduct[] = [
     title: '싱싱한 광어 30마리 팝니다.',
     category: '물고기',
     image: 'https://images.unsplash.com/photo-1544943910-4c1dc44aab44?w=400',
-    status: '수량중',
+    amount: '10',
     fisherman: '김어민',
     location: '부산광역시 기장군',
     hashtag: '해피해피해피마을',
@@ -104,7 +104,7 @@ const MOCK_PRODUCTS: SeafoodProduct[] = [
     title: '신선한 오징어 20마리',
     category: '연체류',
     image: 'https://images.unsplash.com/photo-1544943910-4c1dc44aab44?w=400',
-    status: '수량중',
+    amount: '20',
     fisherman: '이어민',
     location: '강원도 속초시',
     hashtag: '신선한바다',
@@ -115,7 +115,7 @@ const MOCK_PRODUCTS: SeafoodProduct[] = [
     title: '통통한 대게 판매',
     category: '갑각류',
     image: 'https://images.unsplash.com/photo-1544943910-4c1dc44aab44?w=400',
-    status: '수량중',
+    amount: '5',
     fisherman: '박어민',
     location: '경북 포항시',
     hashtag: '포항대게',
@@ -159,7 +159,7 @@ const PostListPage = () => {
             title: food.name,
             category: getCategoryFromType(food.type),
             image: food.image_url,
-            status: '수량중',
+            amount: food.amount,
             fisherman: food.user_name,
             location: food.group_region,
             hashtag: '',
@@ -321,7 +321,7 @@ const PostListPage = () => {
                 ) : (
                   <S.NoImageText>이미지가 존재하지 않습니다</S.NoImageText>
                 )}
-                <S.StatusBadge>{product.status}</S.StatusBadge>
+                <S.StatusBadge>남은 수량: {product.amount}</S.StatusBadge>
               </S.ProductImageWrapper>
               <S.ProductInfo>
                 <S.ProductTitle>{product.title}</S.ProductTitle>
