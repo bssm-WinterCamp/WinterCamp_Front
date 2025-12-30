@@ -219,3 +219,24 @@ export const AnalysisText = styled.div`
   margin-bottom: 16px;
   line-height: 1.5;
 `;
+
+export const LoadingContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px 0;
+`;
+
+export const Spinner = styled.div`
+  width: 40px;
+  height: 40px;
+  border: 4px solid #E5E7EB;
+  border-top-color: #FF6B6B;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+`;

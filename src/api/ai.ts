@@ -14,8 +14,8 @@ export interface AIRecommendResponse {
 
 export const aiAPI = {
   getRecommendations: async (user_id: number): Promise<AIRecommendResponse> => {
-    const response = await apiClient.get('/ai/recommend', {
-      params: { user_id }
+    const response = await apiClient.post('/ai/recommend', {
+      user_id
     });
     return response.data;
   }

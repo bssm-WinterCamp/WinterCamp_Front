@@ -10,10 +10,10 @@ const HomePage = () => {
   const navigate = useNavigate();
   const user = useUserStore((state) => state.user);
   const [userName, setUserName] = useState('guest');
+  const [isAILoading, setIsAILoading] = useState(false);
   const [recommendedProduct, setRecommendedProduct] = useState<{
     id: number;
     name: string;
-    image: string;
     description: string;
   } | null>(null);
   const [analysis, setAnalysis] = useState<string | null>(null);
@@ -26,8 +26,9 @@ const HomePage = () => {
         const userData = JSON.parse(user);
         setUserName(userData.name || 'guest');
 
-        if (userData.user_id) {
-          aiAPI.getRecommendations(userData.user_id)
+        if (userData.id) {
+          setIsAILoading(true);
+          aiAPI.getRecommendations(userData.id)
             .then(response => {
               if (response.message) {
                 // 구매 내역이 없는 경우
@@ -44,13 +45,16 @@ const HomePage = () => {
                 setRecommendedProduct({
                   id: firstRecommend.food_id,
                   name: firstRecommend.name,
-                  image: 'https://images.unsplash.com/photo-1544943910-4c1dc44aab44?w=800',
                   description: firstRecommend.reason
                 });
               }
             })
             .catch(error => {
               console.error('Failed to fetch AI recommendations:', error);
+              setNoRecommendMessage('추천 상품을 불러오는데 실패했습니다.');
+            })
+            .finally(() => {
+              setIsAILoading(false);
             });
         }
       } catch (error) {
@@ -112,13 +116,16 @@ const HomePage = () => {
 
       <S.RecommendSection>
         <S.RecommendTitle>오늘의 추천 상품</S.RecommendTitle>
-        {noRecommendMessage ? (
+        {isAILoading ? (
+          <S.LoadingContainer>
+            <S.Spinner />
+          </S.LoadingContainer>
+        ) : noRecommendMessage ? (
           <S.NoRecommendMessage>{noRecommendMessage}</S.NoRecommendMessage>
         ) : recommendedProduct ? (
           <>
             {analysis && <S.AnalysisText>{analysis}</S.AnalysisText>}
             <S.RecommendCard onClick={() => navigate(`/detail/${recommendedProduct.id}`)}>
-              <S.RecommendImage src={recommendedProduct.image} alt={recommendedProduct.name} />
               <S.RecommendName>{recommendedProduct.name}</S.RecommendName>
             </S.RecommendCard>
             <S.RecommendDescription>
@@ -126,7 +133,7 @@ const HomePage = () => {
             </S.RecommendDescription>
           </>
         ) : (
-          <S.NoRecommendMessage>추천 상품을 불러오는 중입니다...</S.NoRecommendMessage>
+          <S.NoRecommendMessage>로그인하면 AI 추천을 받을 수 있습니다.</S.NoRecommendMessage>
         )}
       </S.RecommendSection>
     </S.Container>
