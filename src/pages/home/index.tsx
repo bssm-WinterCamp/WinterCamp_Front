@@ -83,7 +83,7 @@ const HomePage = () => {
             {chartData.map((data, index) => (
               <S.ChartBar key={index}>
                 <S.BarValue>{data.value.toFixed(1)}만원</S.BarValue>
-                <S.Bar height={(data.value / maxValue) * 150} />
+                <S.Bar height={(data.value / maxValue) * 150} index={index} />
                 <S.BarLabel>{data.month}</S.BarLabel>
               </S.ChartBar>
             ))}
