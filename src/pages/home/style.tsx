@@ -64,7 +64,7 @@ export const ChartTitle = styled.h2`
 
 export const ChartWrapper = styled.div`
   background: #FFFFFF;
-  padding: 20px;
+  padding: 15px 15px 10px 15px;
   border-radius: 12px;
   border: 1px solid #E5E7EB;
 `;
@@ -74,7 +74,7 @@ export const Chart = styled.div`
   align-items: flex-end;
   justify-content: space-between;
   height: 200px;
-  margin-bottom: 16px;
+  margin-bottom: 8px;
   gap: 4px;
 `;
 
@@ -117,7 +117,7 @@ export const ChartLegend = styled.div`
   align-items: center;
   justify-content: center;
   gap: 8px;
-  margin-top: 12px;
+  margin-top: 5px;
 `;
 
 export const LegendDot = styled.div`
