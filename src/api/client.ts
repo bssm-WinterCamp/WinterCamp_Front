@@ -1,6 +1,9 @@
 import axios from 'axios';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
+// 개발 환경에서는 프록시 사용, 프로덕션에서는 실제 URL 사용
+const API_BASE_URL = import.meta.env.DEV
+  ? '/api'
+  : (import.meta.env.VITE_API_BASE_URL || 'https://winter.zuu3.kr');
 
 const apiClient = axios.create({
   baseURL: API_BASE_URL,
