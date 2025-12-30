@@ -13,8 +13,8 @@ export const ContentWrapper = styled.div`
 export const BackButton = styled.button`
   background: none;
   border: none;
-  color: #FF6B6B;
-  font-size: 20px;
+  color: #2C3E50;
+  font-size: 32px;
   font-weight: 700;
   cursor: pointer;
   font-family: 'Paperlogy', sans-serif;
@@ -36,9 +36,13 @@ export const TitleSection = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
+  margin-bottom: 16px;
+`;
+
+export const Divider = styled.div`
+  height: 3px;
+  background: #4A90E2;
   margin-bottom: 20px;
-  padding-bottom: 16px;
-  border-bottom: 1px solid #E5E7EB;
 `;
 
 export const ProductTitle = styled.h2`

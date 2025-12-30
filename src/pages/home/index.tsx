@@ -65,13 +65,11 @@ const HomePage = () => {
         <S.WelcomeSection>
           <S.WelcomeText>{userName} 님</S.WelcomeText>
           <S.WelcomeText>어서오세요.</S.WelcomeText>
-          {userName === 'guest' && (
-            <S.AuthLink onClick={() => navigate('/login')}>
-              어민이세요? 인증하러 가기
-            </S.AuthLink>
-          )}
+          <S.AuthLink onClick={() => navigate('/register')}>
+            어민이세요? 인증하러 가기
+          </S.AuthLink>
         </S.WelcomeSection>
-        <S.ProfileIcon onClick={() => navigate('/my-page')}>
+        <S.ProfileIcon onClick={() => navigate('/mypage')}>
           <Icon icon="material-symbols:account-circle" width="56" height="56" />
         </S.ProfileIcon>
       </S.Header>

@@ -7,6 +7,7 @@ import MyPage from './pages/myPage'
 import DetailPage from './pages/detail'
 import WorkLogPage from './pages/workLog'
 import LoginPage from './pages/login'
+import RegisterPage from './pages/register'
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
           <Route element={<GlobalLayout />}>
             <Route path="/" element={<HomePage />} />
             <Route path="/login" element={<LoginPage />} />
+            <Route path="/register" element={<RegisterPage />} />
             <Route path="/detail/:id" element={<DetailPage />} />
             <Route path="/write" element={<WritePage />} />
             <Route path="/work-log" element={<WorkLogPage />} />

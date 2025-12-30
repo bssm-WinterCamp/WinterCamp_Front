@@ -10,19 +10,26 @@ const SEAFOOD_TYPES = [
   '꽃게', '대게', '새우', '멍게', '우럭', '농어', '방어'
 ];
 
+const CITIES = ['서울', '부산', '인천', '대구', '광주', '대전', '울산', '세종', '경기', '강원', '충북', '충남', '전북', '전남', '경북', '경남', '제주'];
+const DISTRICTS = ['강남구', '서초구', '송파구', '강동구', '동작구', '관악구', '영등포구', '금천구', '구로구', '양천구', '강서구', '마포구', '서대문구', '은평구', '노원구', '도봉구', '강북구', '성북구', '중랑구', '동대문구', '광진구', '성동구', '용산구', '중구', '종로구'];
+const FRESHNESS = ['S', 'A', 'B', 'C'];
+
 const WritePage = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: '',
+    city: '',
+    district: '',
+    freshness: '',
+    description: '',
     quantity: '',
-    price: '',
-    description: ''
+    price: ''
   });
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [imageUrl, setImageUrl] = useState<string>('');
   const [isUploading, setIsUploading] = useState(false);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
@@ -82,8 +89,8 @@ const WritePage = () => {
       await recordAPI.register({
         fisherman_id: userData.fisherman_id,
         type: formData.name,
-        region: userData.region || '부산',
-        fresh: 'A',
+        region: `${formData.city} ${formData.district}`,
+        fresh: formData.freshness,
         description: formData.description,
         amount: parseInt(formData.quantity),
         price: parseInt(formData.price)
@@ -140,14 +147,14 @@ const WritePage = () => {
         </S.Section>
 
         <S.Section>
-          <S.Label>수산물 종류</S.Label>
+          <S.Label>종류</S.Label>
           <S.Select
             name="name"
             value={formData.name}
-            onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
+            onChange={handleChange}
             required
           >
-            <option value="">선택하세요</option>
+            <option value="">종류 선택</option>
             {SEAFOOD_TYPES.map(type => (
               <option key={type} value={type}>{type}</option>
             ))}
@@ -155,34 +162,55 @@ const WritePage = () => {
         </S.Section>
 
         <S.Section>
-          <S.Label>수량</S.Label>
-          <S.Input
-            type="text"
-            name="quantity"
-            placeholder="예: 5마리"
-            value={formData.quantity}
+          <S.Label>지역(시)</S.Label>
+          <S.Select
+            name="city"
+            value={formData.city}
             onChange={handleChange}
             required
-          />
+          >
+            <option value="">지역 선택</option>
+            {CITIES.map(city => (
+              <option key={city} value={city}>{city}</option>
+            ))}
+          </S.Select>
         </S.Section>
 
         <S.Section>
-          <S.Label>가격 (원)</S.Label>
-          <S.Input
-            type="number"
-            name="price"
-            placeholder="예: 15000"
-            value={formData.price}
+          <S.Label>지역(군,구)</S.Label>
+          <S.Select
+            name="district"
+            value={formData.district}
             onChange={handleChange}
             required
-          />
+          >
+            <option value="">지역 선택</option>
+            {DISTRICTS.map(district => (
+              <option key={district} value={district}>{district}</option>
+            ))}
+          </S.Select>
+        </S.Section>
+
+        <S.Section>
+          <S.Label>신선도</S.Label>
+          <S.Select
+            name="freshness"
+            value={formData.freshness}
+            onChange={handleChange}
+            required
+          >
+            <option value="">신선도 선택</option>
+            {FRESHNESS.map(fresh => (
+              <option key={fresh} value={fresh}>{fresh}</option>
+            ))}
+          </S.Select>
         </S.Section>
 
         <S.Section>
           <S.Label>설명</S.Label>
           <S.TextArea
             name="description"
-            placeholder="수산물에 대한 설명을 입력하세요"
+            placeholder="신선한 광어입니다"
             value={formData.description}
             onChange={handleChange}
             rows={4}
@@ -190,7 +218,31 @@ const WritePage = () => {
           />
         </S.Section>
 
-        <S.SubmitButton type="submit">등록하기</S.SubmitButton>
+        <S.Section>
+          <S.Label>수량</S.Label>
+          <S.Input
+            type="text"
+            name="quantity"
+            placeholder="예: 4"
+            value={formData.quantity}
+            onChange={handleChange}
+            required
+          />
+        </S.Section>
+
+        <S.Section>
+          <S.Label>가격</S.Label>
+          <S.Input
+            type="number"
+            name="price"
+            placeholder="예: 4000"
+            value={formData.price}
+            onChange={handleChange}
+            required
+          />
+        </S.Section>
+
+        <S.SubmitButton type="submit">기록 등록</S.SubmitButton>
       </S.Form>
     </S.Container>
   );
