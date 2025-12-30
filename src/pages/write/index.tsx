@@ -81,13 +81,12 @@ const WritePage = () => {
 
       await recordAPI.register({
         fisherman_id: userData.fisherman_id,
-        name: formData.name,
-        type: '물고기',
-        quantity: parseInt(formData.quantity),
-        unit: '마리',
-        price: parseInt(formData.price),
+        type: formData.name,
+        region: userData.region || '부산',
+        fresh: 'A',
         description: formData.description,
-        image_url: imageUrl
+        amount: parseInt(formData.quantity),
+        price: parseInt(formData.price)
       });
 
       alert('수산물이 등록되었습니다!');
