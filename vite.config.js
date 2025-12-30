@@ -26,6 +26,11 @@ export default defineConfig({
         changeOrigin: true,
         secure: false
       },
+      '/user': {
+        target: 'https://winter.zuu3.kr',
+        changeOrigin: true,
+        secure: false
+      },
       '/ai': {
         target: 'https://winter.zuu3.kr',
         changeOrigin: true,

@@ -9,6 +9,7 @@ export interface LoginResponse {
   id: string;
   name: string;
   phoneNumber: string;
+  role?: string;
 }
 
 export const authAPI = {

@@ -2,10 +2,12 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Icon } from '@iconify/react';
 import { aiAPI } from '../../api/ai';
+import { useUserStore } from '../../store';
 import * as S from './style';
 
 const HomePage = () => {
   const navigate = useNavigate();
+  const user = useUserStore((state) => state.user);
   const [userName, setUserName] = useState('guest');
   const [recommendedProduct, setRecommendedProduct] = useState({
     id: 1,
@@ -65,9 +67,11 @@ const HomePage = () => {
         <S.WelcomeSection>
           <S.WelcomeText>{userName} 님</S.WelcomeText>
           <S.WelcomeText>어서오세요.</S.WelcomeText>
-          <S.AuthLink onClick={() => navigate('/register')}>
-            어민이세요? 인증하러 가기
-          </S.AuthLink>
+          {user?.role !== 'fisherman' && (
+            <S.AuthLink onClick={() => navigate('/register')}>
+              어민이세요? 인증하러 가기
+            </S.AuthLink>
+          )}
         </S.WelcomeSection>
         <S.ProfileIcon onClick={() => navigate('/mypage')}>
           <Icon icon="material-symbols:account-circle" width="56" height="56" />

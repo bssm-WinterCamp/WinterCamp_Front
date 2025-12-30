@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Icon } from '@iconify/react';
 import { fishermanAPI } from '../../api/fisherman';
 import { fileAPI } from '../../api/file';
+import { useUserStore } from '../../store';
 import * as S from './style';
 
 interface Region {
@@ -45,6 +46,7 @@ const VILLAGES = ['해피마을', '바다마을', '물고기마을', '갈매기�
 
 const RegisterPage = () => {
   const navigate = useNavigate();
+  const user = useUserStore((state) => state.user);
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
@@ -106,12 +108,18 @@ const RegisterPage = () => {
       const uploadResult = await fileAPI.uploadImage(imageFile);
       
       // 어민 등록
+      if (!user) {
+        alert('로그인이 필요합니다.');
+        navigate('/login');
+        return;
+      }
+      
       await fishermanAPI.register({
-        name: formData.name,
-        phoneNumber: formData.phone,
+        user_id: parseInt(user.id), // store에서 가져온 실제 user_id 사용
+        group: "1", // 그룹은 1로 고정
         region: `${formData.city} ${formData.district}`,
-        group: formData.village,
-        password: 'default123' // 임시 비밀번호
+        phoneNumber: formData.phone,
+        image: uploadResult.url
       });
       
       alert('어민 등록이 완료되었습니다!');

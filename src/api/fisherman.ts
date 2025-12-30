@@ -1,11 +1,11 @@
 import apiClient from './client';
 
 export interface FishermanRegisterRequest {
-  name: string;
-  phoneNumber: string;
-  region: string;
+  user_id: number;
   group: string;
-  password: string;
+  region: string;
+  phoneNumber: string;
+  image: string;
 }
 
 export interface FishermanRegisterResponse {
