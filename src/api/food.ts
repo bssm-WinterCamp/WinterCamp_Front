@@ -57,7 +57,7 @@ export const foodAPI = {
   },
 
   getFoodDetail: async (food_id: number): Promise<FoodDetail> => {
-    const response = await apiClient.post('/food', {
+    const response = await apiClient.post('/food/detail', {
       food_id
     });
     return response.data;
