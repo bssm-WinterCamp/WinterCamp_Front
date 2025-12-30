@@ -72,17 +72,40 @@ export const ChartWrapper = styled.div`
 export const Chart = styled.div`
   display: flex;
   align-items: flex-end;
-  justify-content: space-between;
+  justify-content: flex-start;
   height: 200px;
   margin-bottom: 8px;
   gap: 4px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding-bottom: 8px;
+
+  /* 스크롤바 스타일링 */
+  &::-webkit-scrollbar {
+    height: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: #F3F4F6;
+    border-radius: 3px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #D1D5DB;
+    border-radius: 3px;
+
+    &:hover {
+      background: #9CA3AF;
+    }
+  }
 `;
 
 export const ChartBar = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  flex: 1;
+  flex: 0 0 auto;
+  min-width: 40px;
   gap: 4px;
   height: 100%;
   justify-content: flex-end;
@@ -97,16 +120,22 @@ export const BarValue = styled.div`
   height: 20px;
 `;
 
-export const Bar = styled.div<{ height: number; index: number }>`
+export const Bar = styled.div<{ height: number; index: number; isSelected?: boolean }>`
   width: 100%;
   height: ${props => props.height}px;
-  background: #FF6B6B;
+  background: ${props => props.isSelected ? '#E03E3E' : '#FF6B6B'};
   border-radius: 4px 4px 0 0;
   animation: slideUp 0.6s ease-out forwards;
   animation-delay: ${props => props.index * 0.05}s;
   transform-origin: bottom;
   opacity: 0;
   transform: scaleY(0);
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+
+  &:hover {
+    background: #E03E3E;
+  }
 
   @keyframes slideUp {
     to {
@@ -144,6 +173,107 @@ export const LegendText = styled.div`
   font-weight: 600;
   color: #6B7280;
   font-family: 'Paperlogy', sans-serif;
+`;
+
+export const SeafoodTableWrapper = styled.div`
+  margin-top: 20px;
+  background: #FFFFFF;
+  border-radius: 12px;
+  border: 1px solid #E5E7EB;
+  padding: 20px;
+  animation: fadeIn 0.3s ease-in;
+  overflow-x: auto;
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+`;
+
+export const TableTitle = styled.h3`
+  font-size: 18px;
+  font-weight: 700;
+  color: #2C3E50;
+  font-family: 'Paperlogy', sans-serif;
+  margin-bottom: 16px;
+`;
+
+export const SeafoodTable = styled.table`
+  width: 100%;
+  border-collapse: collapse;
+  font-family: 'Paperlogy', sans-serif;
+  min-width: 500px;
+`;
+
+export const TableHeader = styled.thead`
+  background-color: #F9FAFB;
+`;
+
+export const TableHeaderCell = styled.th`
+  padding: 12px 8px;
+  text-align: left;
+  font-size: 12px;
+  font-weight: 700;
+  color: #374151;
+  border-bottom: 2px solid #E5E7EB;
+  white-space: nowrap;
+
+  &:first-of-type {
+    padding-left: 0;
+    min-width: 80px;
+  }
+
+  &:nth-of-type(2) {
+    min-width: 90px;
+  }
+
+  &:nth-of-type(3) {
+    min-width: 70px;
+  }
+
+  &:last-of-type {
+    padding-right: 0;
+    min-width: 140px;
+  }
+`;
+
+export const TableBody = styled.tbody``;
+
+export const TableRow = styled.tr`
+  border-bottom: 1px solid #F3F4F6;
+  transition: background-color 0.2s ease;
+
+  &:hover {
+    background-color: #F9FAFB;
+  }
+
+  &:last-child {
+    border-bottom: none;
+  }
+`;
+
+export const TableCell = styled.td`
+  padding: 12px 8px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #6B7280;
+  white-space: nowrap;
+
+  &:first-of-type {
+    padding-left: 0;
+    font-weight: 600;
+    color: #2C3E50;
+  }
+
+  &:last-of-type {
+    padding-right: 0;
+  }
 `;
 
 export const RecommendSection = styled.div`
