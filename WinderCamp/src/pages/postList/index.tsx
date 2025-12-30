@@ -1,7 +1,6 @@
 const PostListPage = () => {
   return (
     <div>
-
     </div>
   )
 }

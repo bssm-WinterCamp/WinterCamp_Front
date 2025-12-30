@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import GlobalLayout from './layouts/GlobalLayout'
-import HomePage from './pages/HomePage'
+import HomePage from './pages/home'
 import PostListPage from './pages/PostListPage'
 import WritePage from './pages/WritePage'
 import MyPage from './pages/MyPage'
