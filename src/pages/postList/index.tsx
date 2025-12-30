@@ -127,7 +127,7 @@ const PostListPage = () => {
   const navigate = useNavigate();
   const [selectedCategory, setSelectedCategory] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
-  const [products, setProducts] = useState<SeafoodProduct[]>(MOCK_PRODUCTS);
+  const [products, setProducts] = useState<SeafoodProduct[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [selectedCity, setSelectedCity] = useState<string>('');
   const [selectedDistrict, setSelectedDistrict] = useState<string>('');
@@ -155,14 +155,14 @@ const PostListPage = () => {
           const foodList = await foodAPI.getLocalFood(location);
 
           const transformedProducts: SeafoodProduct[] = foodList.map(food => ({
-            id: food.food_id,
+            id: food.id,
             title: food.name,
             category: getCategoryFromType(food.type),
-            image: food.image_url || 'https://images.unsplash.com/photo-1544943910-4c1dc44aab44?w=400',
-            status: food.status,
-            fisherman: food.fisherman_name,
-            location: food.region,
-            hashtag: food.hashtag || '',
+            image: 'https://images.unsplash.com/photo-1544943910-4c1dc44aab44?w=400',
+            status: '수량중',
+            fisherman: food.user_name,
+            location: food.group_region,
+            hashtag: '',
             date: new Date(food.created_at).toLocaleDateString('ko-KR', {
               year: 'numeric',
               month: '2-digit',
@@ -173,44 +173,13 @@ const PostListPage = () => {
           setProducts(transformedProducts);
         } catch (error) {
           console.error('Failed to fetch products:', error);
-          setProducts(MOCK_PRODUCTS);
+          setProducts([]);
         } finally {
           setIsLoading(false);
         }
       } else {
-        const user = localStorage.getItem('user');
-        if (user) {
-          try {
-            setIsLoading(true);
-            const userData = JSON.parse(user);
-            const region = userData.region || '부산';
-
-            const foodList = await foodAPI.getLocalFood(region);
-
-            const transformedProducts: SeafoodProduct[] = foodList.map(food => ({
-              id: food.food_id,
-              title: food.name,
-              category: getCategoryFromType(food.type),
-              image: food.image_url || 'https://images.unsplash.com/photo-1544943910-4c1dc44aab44?w=400',
-              status: food.status,
-              fisherman: food.fisherman_name,
-              location: food.region,
-              hashtag: food.hashtag || '',
-              date: new Date(food.created_at).toLocaleDateString('ko-KR', {
-                year: 'numeric',
-                month: '2-digit',
-                day: '2-digit'
-              }).replace(/\. /g, '.').replace(/\.$/, '')
-            }));
-
-            setProducts(transformedProducts);
-          } catch (error) {
-            console.error('Failed to fetch products:', error);
-            setProducts(MOCK_PRODUCTS);
-          } finally {
-            setIsLoading(false);
-          }
-        }
+        // 드롭다운이 선택되지 않았으면 products를 비움
+        setProducts([]);
       }
     };
 
@@ -336,7 +305,10 @@ const PostListPage = () => {
 
       <S.ProductGrid>
         {isLoading ? (
-          <S.EmptyMessage>로딩 중...</S.EmptyMessage>
+          <S.LoadingContainer>
+            <S.Spinner />
+            <S.LoadingText>수산물을 불러오는 중...</S.LoadingText>
+          </S.LoadingContainer>
         ) : filteredProducts.length > 0 ? (
           filteredProducts.map(product => (
             <S.ProductCard
@@ -358,7 +330,9 @@ const PostListPage = () => {
           ))
         ) : (
           <S.EmptyMessage>
-            검색 결과가 없습니다
+            {!selectedCity || !selectedDistrict 
+              ? '위의 지역을 선택해서 리스트를 확인하세요!' 
+              : '해당 지역에 등록된 수산물이 없습니다'}
           </S.EmptyMessage>
         )}
       </S.ProductGrid>

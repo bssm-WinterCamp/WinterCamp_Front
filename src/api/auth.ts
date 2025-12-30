@@ -10,6 +10,7 @@ export interface LoginResponse {
   name: string;
   phoneNumber: string;
   role?: string;
+  fisherman_id?: string;
 }
 
 export const authAPI = {

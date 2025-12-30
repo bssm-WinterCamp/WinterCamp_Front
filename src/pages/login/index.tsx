@@ -33,7 +33,8 @@ const LoginPage = () => {
         id: response.id,
         name: response.name,
         phoneNumber: response.phoneNumber,
-        role: response.role
+        role: response.role,
+        fisherman_id: response.fisherman_id
       });
       
       alert(`환영합니다, ${response.name}님!`);

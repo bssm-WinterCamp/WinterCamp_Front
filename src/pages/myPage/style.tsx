@@ -3,7 +3,7 @@ import styled from '@emotion/styled';
 export const Container = styled.div`
   min-height: 100vh;
   background: #FFFFFF;
-  padding: 20px 20px 160px;
+  padding: 30px 20px 160px;
 `;
 
 export const Header = styled.div`
@@ -70,6 +70,27 @@ export const ProfileDetail = styled.div`
 
   &:last-child {
     margin-bottom: 0;
+  }
+`;
+
+export const LoadingContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 60px 0;
+`;
+
+export const Spinner = styled.div`
+  width: 48px;
+  height: 48px;
+  border: 4px solid #E5E7EB;
+  border-top-color: #FF6B6B;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
   }
 `;
 
@@ -161,40 +182,79 @@ export const SaveButton = styled.button`
   font-family: 'Paperlogy', sans-serif;
 `;
 
-export const StatsSection = styled.div`
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
+export const InfoSection = styled.div`
+  background: #FFFFFF;
+  border-radius: 12px;
+  padding: 20px;
   margin-bottom: 24px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 `;
 
-export const StatCard = styled.div`
-  background: #F9FAFB;
-  border: 2px solid #E5E7EB;
-  border-radius: 16px;
-  padding: 24px 20px;
-  text-align: center;
+export const InfoRow = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+  
+  &:not(:last-child) {
+    border-bottom: 1px solid #E5E7EB;
+  }
 `;
 
-export const StatLabel = styled.div`
+export const InfoLabel = styled.div`
+  color: #8B95A1;
   font-size: 18px;
-  font-weight: 700;
-  color: #6B7280;
-  margin-bottom: 10px;
-  font-family: 'Paperlogy', sans-serif;
+  font-weight: 600;
 `;
 
-export const StatValue = styled.div`
-  font-size: 30px;
-  font-weight: 800;
-  color: #FF6B6B;
-  font-family: 'Paperlogy', sans-serif;
+export const InfoValue = styled.div`
+  color: #1E293B;
+  font-size: 20px;
+  font-weight: 700;
+`;
+
+export const InfoInput = styled.input`
+  color: #1E293B;
+  font-size: 18px;
+  font-weight: 600;
+  padding: 8px 12px;
+  border: 2px solid #E5E7EB;
+  border-radius: 8px;
+  background: #FFFFFF;
+  transition: all 0.2s ease;
+  
+  &:focus {
+    outline: none;
+    border-color: #FF6B6B;
+  }
+  
+  &::placeholder {
+    color: #9CA3AF;
+  }
 `;
 
 export const MenuSection = styled.div`
   display: flex;
   flex-direction: column;
   gap: 12px;
+`;
+
+export const MenuButton = styled.button`
+  background: #FFFFFF;
+  border: 2px solid #E5E7EB;
+  border-radius: 16px;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.2s ease;
+  
+  &:hover {
+    border-color: #FF6B6B;
+    background: #FFF5F5;
+  }
 `;
 
 export const MenuItem = styled.button`

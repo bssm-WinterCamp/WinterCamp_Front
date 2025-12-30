@@ -1,21 +1,56 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Icon } from '@iconify/react';
 import { recordAPI } from '../../api/record';
 import { fileAPI } from '../../api/file';
+import { useUserStore } from '../../store';
 import * as S from './style';
 
-const SEAFOOD_TYPES = [
-  '고등어', '갈치', '광어', '오징어', '참돔', '문어', '조기', '전복',
-  '꽃게', '대게', '새우', '멍게', '우럭', '농어', '방어'
+interface Region {
+  city: string;
+  districts: string[];
+}
+
+const REGIONS: Region[] = [
+  {
+    city: '서울',
+    districts: ['강남구', '강동구', '강북구', '강서구', '관악구', '광진구', '구로구', '금천구', '노원구', '도봉구', '동대문구', '동작구', '마포구', '서대문구', '서초구', '성동구', '성북구', '송파구', '양천구', '영등포구', '용산구', '은평구', '종로구', '중구', '중랑구']
+  },
+  {
+    city: '부산',
+    districts: ['강서구', '금정구', '기장군', '남구', '동구', '동래구', '부산진구', '북구', '사상구', '사하구', '서구', '수영구', '연제구', '영도구', '중구', '해운대구']
+  },
+  {
+    city: '인천',
+    districts: ['계양구', '남동구', '동구', '미추홀구', '부평구', '서구', '연수구', '중구', '강화군', '옹진군']
+  },
+  {
+    city: '대구',
+    districts: ['남구', '달서구', '동구', '북구', '서구', '수성구', '중구', '달성군']
+  },
+  {
+    city: '광주',
+    districts: ['광산구', '남구', '동구', '북구', '서구']
+  },
+  {
+    city: '대전',
+    districts: ['대덕구', '동구', '서구', '유성구', '중구']
+  },
+  {
+    city: '울산',
+    districts: ['남구', '동구', '북구', '중구', '울주군']
+  }
 ];
 
-const CITIES = ['서울', '부산', '인천', '대구', '광주', '대전', '울산', '세종', '경기', '강원', '충북', '충남', '전북', '전남', '경북', '경남', '제주'];
-const DISTRICTS = ['강남구', '서초구', '송파구', '강동구', '동작구', '관악구', '영등포구', '금천구', '구로구', '양천구', '강서구', '마포구', '서대문구', '은평구', '노원구', '도봉구', '강북구', '성북구', '중랑구', '동대문구', '광진구', '성동구', '용산구', '중구', '종로구'];
+const SEAFOOD_TYPES = [
+  '물고기', '연체류', '갑각류', '해조류'
+];
+
 const FRESHNESS = ['S', 'A', 'B', 'C'];
 
 const WritePage = () => {
   const navigate = useNavigate();
+  const user = useUserStore((state) => state.user);
   const [formData, setFormData] = useState({
     name: '',
     city: '',
@@ -28,6 +63,23 @@ const WritePage = () => {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [imageUrl, setImageUrl] = useState<string>('');
   const [isUploading, setIsUploading] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isTypeDropdownOpen, setIsTypeDropdownOpen] = useState(false);
+  const [isCityDropdownOpen, setIsCityDropdownOpen] = useState(false);
+  const [isDistrictDropdownOpen, setIsDistrictDropdownOpen] = useState(false);
+  const [isFreshnessDropdownOpen, setIsFreshnessDropdownOpen] = useState(false);
+  const [districts, setDistricts] = useState<string[]>([]);
+
+  useEffect(() => {
+    if (formData.city) {
+      const region = REGIONS.find(r => r.city === formData.city);
+      setDistricts(region?.districts || []);
+      setFormData(prev => ({ ...prev, district: '' }));
+    } else {
+      setDistricts([]);
+      setFormData(prev => ({ ...prev, district: '' }));
+    }
+  }, [formData.city]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -76,18 +128,23 @@ const WritePage = () => {
       return;
     }
 
-    const user = localStorage.getItem('user');
     if (!user) {
       alert('로그인이 필요합니다.');
       navigate('/login');
       return;
     }
 
-    try {
-      const userData = JSON.parse(user);
+    if (user.role !== 'fisherman') {
+      alert('어민 등록이 필요합니다.');
+      navigate('/register');
+      return;
+    }
 
+    try {
+      setIsSubmitting(true);
+      // fisherman_id는 1로 고정
       await recordAPI.register({
-        fisherman_id: userData.fisherman_id,
+        fisherman_id: "1",
         type: formData.name,
         region: `${formData.city} ${formData.district}`,
         fresh: formData.freshness,
@@ -101,16 +158,13 @@ const WritePage = () => {
     } catch (error) {
       alert('등록에 실패했습니다. 다시 시도해주세요.');
       console.error('Register record error:', error);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
   return (
     <S.Container>
-      <S.Header>
-        <S.Title>수산물 등록</S.Title>
-        <S.Subtitle>오늘 잡은 수산물을 등록하세요</S.Subtitle>
-      </S.Header>
-
       <S.Form onSubmit={handleSubmit}>
         <S.Section>
           <S.Label>사진</S.Label>
@@ -148,62 +202,137 @@ const WritePage = () => {
 
         <S.Section>
           <S.Label>종류</S.Label>
-          <S.Select
-            name="name"
-            value={formData.name}
-            onChange={handleChange}
-            required
-          >
-            <option value="">종류 선택</option>
-            {SEAFOOD_TYPES.map(type => (
-              <option key={type} value={type}>{type}</option>
-            ))}
-          </S.Select>
+          <S.DropdownWrapper>
+            <S.CustomDropdown onClick={() => setIsTypeDropdownOpen(!isTypeDropdownOpen)}>
+              <S.DropdownLabel>{formData.name || '종류 선택'}</S.DropdownLabel>
+              <S.DropdownArrow>
+                <Icon 
+                  icon="mdi:chevron-down" 
+                  width="20" 
+                  height="20"
+                  style={{ transform: isTypeDropdownOpen ? 'rotate(180deg)' : 'rotate(0)', transition: 'transform 0.2s' }}
+                />
+              </S.DropdownArrow>
+            </S.CustomDropdown>
+            {isTypeDropdownOpen && (
+              <S.DropdownList>
+                {SEAFOOD_TYPES.map((type) => (
+                  <S.DropdownItem 
+                    key={type} 
+                    onClick={() => {
+                      setFormData(prev => ({ ...prev, name: type }));
+                      setIsTypeDropdownOpen(false);
+                    }}
+                    active={formData.name === type}
+                  >
+                    {type}
+                  </S.DropdownItem>
+                ))}
+              </S.DropdownList>
+            )}
+          </S.DropdownWrapper>
         </S.Section>
 
         <S.Section>
           <S.Label>지역(시)</S.Label>
-          <S.Select
-            name="city"
-            value={formData.city}
-            onChange={handleChange}
-            required
-          >
-            <option value="">지역 선택</option>
-            {CITIES.map(city => (
-              <option key={city} value={city}>{city}</option>
-            ))}
-          </S.Select>
+          <S.DropdownWrapper>
+            <S.CustomDropdown onClick={() => setIsCityDropdownOpen(!isCityDropdownOpen)}>
+              <S.DropdownLabel>{formData.city || '지역 선택'}</S.DropdownLabel>
+              <S.DropdownArrow>
+                <Icon 
+                  icon="mdi:chevron-down" 
+                  width="20" 
+                  height="20"
+                  style={{ transform: isCityDropdownOpen ? 'rotate(180deg)' : 'rotate(0)', transition: 'transform 0.2s' }}
+                />
+              </S.DropdownArrow>
+            </S.CustomDropdown>
+            {isCityDropdownOpen && (
+              <S.DropdownList>
+                {REGIONS.map((region) => (
+                  <S.DropdownItem 
+                    key={region.city} 
+                    onClick={() => {
+                      setFormData(prev => ({ ...prev, city: region.city }));
+                      setIsCityDropdownOpen(false);
+                    }}
+                    active={formData.city === region.city}
+                  >
+                    {region.city}
+                  </S.DropdownItem>
+                ))}
+              </S.DropdownList>
+            )}
+          </S.DropdownWrapper>
         </S.Section>
 
         <S.Section>
           <S.Label>지역(군,구)</S.Label>
-          <S.Select
-            name="district"
-            value={formData.district}
-            onChange={handleChange}
-            required
-          >
-            <option value="">지역 선택</option>
-            {DISTRICTS.map(district => (
-              <option key={district} value={district}>{district}</option>
-            ))}
-          </S.Select>
+          <S.DropdownWrapper>
+            <S.CustomDropdown 
+              onClick={() => districts.length > 0 && setIsDistrictDropdownOpen(!isDistrictDropdownOpen)}
+              disabled={districts.length === 0}
+            >
+              <S.DropdownLabel>{formData.district || '지역 선택'}</S.DropdownLabel>
+              <S.DropdownArrow>
+                <Icon 
+                  icon="mdi:chevron-down" 
+                  width="20" 
+                  height="20"
+                  style={{ transform: isDistrictDropdownOpen ? 'rotate(180deg)' : 'rotate(0)', transition: 'transform 0.2s' }}
+                />
+              </S.DropdownArrow>
+            </S.CustomDropdown>
+            {isDistrictDropdownOpen && (
+              <S.DropdownList>
+                {districts.map((district) => (
+                  <S.DropdownItem 
+                    key={district} 
+                    onClick={() => {
+                      setFormData(prev => ({ ...prev, district }));
+                      setIsDistrictDropdownOpen(false);
+                    }}
+                    active={formData.district === district}
+                  >
+                    {district}
+                  </S.DropdownItem>
+                ))}
+              </S.DropdownList>
+            )}
+          </S.DropdownWrapper>
         </S.Section>
 
         <S.Section>
           <S.Label>신선도</S.Label>
-          <S.Select
-            name="freshness"
-            value={formData.freshness}
-            onChange={handleChange}
-            required
-          >
-            <option value="">신선도 선택</option>
-            {FRESHNESS.map(fresh => (
-              <option key={fresh} value={fresh}>{fresh}</option>
-            ))}
-          </S.Select>
+          <S.DropdownWrapper>
+            <S.CustomDropdown onClick={() => setIsFreshnessDropdownOpen(!isFreshnessDropdownOpen)}>
+              <S.DropdownLabel>{formData.freshness || '신선도 선택'}</S.DropdownLabel>
+              <S.DropdownArrow>
+                <Icon 
+                  icon="mdi:chevron-down" 
+                  width="20" 
+                  height="20"
+                  style={{ transform: isFreshnessDropdownOpen ? 'rotate(180deg)' : 'rotate(0)', transition: 'transform 0.2s' }}
+                />
+              </S.DropdownArrow>
+            </S.CustomDropdown>
+            {isFreshnessDropdownOpen && (
+              <S.DropdownList>
+                {FRESHNESS.map((fresh) => (
+                  <S.DropdownItem 
+                    key={fresh} 
+                    onClick={() => {
+                      setFormData(prev => ({ ...prev, freshness: fresh }));
+                      setIsFreshnessDropdownOpen(false);
+                    }}
+                    active={formData.freshness === fresh}
+                  >
+                    {fresh}
+                  </S.DropdownItem>
+                ))}
+              </S.DropdownList>
+            )}
+          </S.DropdownWrapper>
         </S.Section>
 
         <S.Section>
@@ -242,7 +371,14 @@ const WritePage = () => {
           />
         </S.Section>
 
-        <S.SubmitButton type="submit">기록 등록</S.SubmitButton>
+        <S.SubmitButton type="submit" disabled={isSubmitting || isUploading}>
+          {isSubmitting ? (
+            <S.ButtonContent>
+              <S.ButtonSpinner />
+              <span>등록 중...</span>
+            </S.ButtonContent>
+          ) : '등록'}
+        </S.SubmitButton>
       </S.Form>
     </S.Container>
   );

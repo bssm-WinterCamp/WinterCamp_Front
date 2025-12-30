@@ -12,6 +12,15 @@ const fadeIn = keyframes`
   }
 `;
 
+const spin = keyframes`
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+`;
+
 export const Container = styled.div`
   min-height: 100vh;
   background: #FFFFFF;
@@ -314,7 +323,32 @@ export const EmptyMessage = styled.div`
   font-family: 'Paperlogy', sans-serif;
   font-weight: 600;
   background: #FFFFFF;
-  border: 2px dashed #D1D5DB;
   border-radius: 12px;
   grid-column: 1 / -1;
+`;
+
+export const LoadingContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 100px 20px;
+  grid-column: 1 / -1;
+  gap: 20px;
+`;
+
+export const Spinner = styled.div`
+  width: 56px;
+  height: 56px;
+  border: 5px solid #F3F4F6;
+  border-top: 5px solid #FF6B6B;
+  border-radius: 50%;
+  animation: ${spin} 0.8s linear infinite;
+`;
+
+export const LoadingText = styled.div`
+  font-size: 20px;
+  font-weight: 600;
+  color: #6B7280;
+  font-family: 'Paperlogy', sans-serif;
 `;

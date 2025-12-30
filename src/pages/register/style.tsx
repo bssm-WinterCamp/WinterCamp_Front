@@ -1,6 +1,15 @@
 import styled from '@emotion/styled';
 import { keyframes } from '@emotion/react';
 
+const spin = keyframes`
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+`;
+
 export const Container = styled.div`
   min-height: 100vh;
   background: #FFFFFF;
@@ -246,6 +255,35 @@ export const SubmitButton = styled.button`
   &:active {
     transform: scale(0.98);
   }
+  
+  &:disabled {
+    background: #D1D5DB;
+    cursor: not-allowed;
+    
+    &:hover {
+      background: #D1D5DB;
+    }
+    
+    &:active {
+      transform: none;
+    }
+  }
+`;
+
+export const ButtonContent = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+`;
+
+export const ButtonSpinner = styled.div`
+  width: 20px;
+  height: 20px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-top: 3px solid #FFFFFF;
+  border-radius: 50%;
+  animation: ${spin} 0.6s linear infinite;
 `;
 
 export const ImageUploadWrapper = styled.div`

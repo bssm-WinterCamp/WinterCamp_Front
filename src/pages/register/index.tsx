@@ -47,6 +47,7 @@ const VILLAGES = ['해피마을', '바다마을', '물고기마을', '갈매기�
 const RegisterPage = () => {
   const navigate = useNavigate();
   const user = useUserStore((state) => state.user);
+  const setUser = useUserStore((state) => state.setUser);
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
@@ -114,7 +115,7 @@ const RegisterPage = () => {
         return;
       }
       
-      await fishermanAPI.register({
+      const registerResult = await fishermanAPI.register({
         user_id: parseInt(user.id), // store에서 가져온 실제 user_id 사용
         group: "1", // 그룹은 1로 고정
         region: `${formData.city} ${formData.district}`,
@@ -122,8 +123,15 @@ const RegisterPage = () => {
         image: uploadResult.url
       });
       
+      // store에 fisherman_id와 role 업데이트
+      setUser({
+        ...user,
+        fisherman_id: registerResult.fisherman_id,
+        role: 'fisherman'
+      });
+      
       alert('어민 등록이 완료되었습니다!');
-      navigate('/login');
+      navigate('/');
     } catch (error) {
       alert('등록에 실패했습니다. 다시 시도해주세요.');
       console.error('Register error:', error);
@@ -296,7 +304,14 @@ const RegisterPage = () => {
           />
         </S.InputGroup>
 
-        <S.SubmitButton type="submit">기록 등록</S.SubmitButton>
+        <S.SubmitButton type="submit" disabled={isUploading}>
+          {isUploading ? (
+            <S.ButtonContent>
+              <S.ButtonSpinner />
+              <span>등록 중...</span>
+            </S.ButtonContent>
+          ) : '등록'}
+        </S.SubmitButton>
       </S.Form>
     </S.Container>
   );
