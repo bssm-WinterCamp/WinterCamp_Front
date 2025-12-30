@@ -97,11 +97,23 @@ export const BarValue = styled.div`
   height: 20px;
 `;
 
-export const Bar = styled.div<{ height: number }>`
+export const Bar = styled.div<{ height: number; index: number }>`
   width: 100%;
   height: ${props => props.height}px;
   background: #FF6B6B;
   border-radius: 4px 4px 0 0;
+  animation: slideUp 0.6s ease-out forwards;
+  animation-delay: ${props => props.index * 0.05}s;
+  transform-origin: bottom;
+  opacity: 0;
+  transform: scaleY(0);
+
+  @keyframes slideUp {
+    to {
+      opacity: 1;
+      transform: scaleY(1);
+    }
+  }
 `;
 
 export const BarLabel = styled.div`
