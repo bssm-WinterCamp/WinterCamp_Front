@@ -2,12 +2,13 @@ import styled from '@emotion/styled';
 
 export const Container = styled.div`
   min-height: 100vh;
-  background: #F5F5F0;
-  padding: 24px 20px 40px;
+  background: #FFFFFF;
+  padding: 24px 20px 140px;
 `;
 
 export const Header = styled.div`
-  margin-bottom: 32px;
+  margin-bottom: 24px;
+  text-align: center;
 `;
 
 export const BackButton = styled.button`
@@ -33,10 +34,10 @@ export const BackButton = styled.button`
 `;
 
 export const Title = styled.h1`
-  font-size: 28px;
-  font-weight: 800;
-  color: #111827;
-  margin-bottom: 8px;
+  font-size: 20px;
+  font-weight: 700;
+  color: #2C3E50;
+  margin-bottom: 0;
   font-family: 'Paperlogy', sans-serif;
 `;
 
@@ -124,4 +125,68 @@ export const SubmitButton = styled.button`
   font-weight: 800;
   border-radius: 12px;
   min-height: 60px;
+  background: #FF6B6B;
+  color: #FFFFFF;
+  border: none;
+  cursor: pointer;
+  font-family: 'Paperlogy', sans-serif;
+
+  &:hover {
+    background: #FF5252;
+  }
+
+  &:active {
+    transform: scale(0.98);
+  }
+`;
+
+export const ImageUploadWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+export const CircleImageUploadLabel = styled.label`
+  display: block;
+  cursor: pointer;
+`;
+
+export const CircleUploadPlaceholder = styled.div`
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  border: 2px solid #E5E7EB;
+  background: #FFFFFF;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+`;
+
+export const CircleUploadText = styled.div`
+  font-size: 14px;
+  font-weight: 500;
+  color: #9CA3AF;
+  font-family: 'Paperlogy', sans-serif;
+  text-align: center;
+`;
+
+export const CircleImagePreview = styled.div`
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  overflow: hidden;
+  cursor: pointer;
+  border: 2px solid #E5E7EB;
+`;
+
+export const CirclePreviewImage = styled.img`
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+`;
+
+export const ImageInput = styled.input`
+  display: none;
 `;

@@ -1,9 +1,6 @@
 import axios from 'axios';
 
-// 개발 환경에서는 프록시 사용, 프로덕션에서는 실제 URL 사용
-const CDN_BASE_URL = import.meta.env.DEV
-  ? ''
-  : (import.meta.env.VITE_CDN_BASE_URL || 'https://cdn.zuu3.kr');
+const CDN_BASE_URL = import.meta.env.VITE_CDN_BASE_URL || 'https://cdn.zuu3.kr';
 
 export interface FileUploadResponse {
   filename: string;

@@ -52,7 +52,21 @@ const DetailPage = () => {
         });
       } catch (error) {
         console.error('Failed to fetch product detail:', error);
-        setProduct(null);
+        // 임시 목업 데이터 사용
+        setProduct({
+          id: Number(id),
+          title: '싱싱한 광어 3마리 팝니다.',
+          category: '물고기',
+          image: 'https://images.unsplash.com/photo-1544943910-4c1dc44aab44?w=800',
+          status: 'S급 물고기',
+          fisherman: '김어민',
+          location: '부산광역시 기장군',
+          hashtag: '해피해피해피마을',
+          date: '2025.08.27',
+          quantity: '수량 3마리',
+          pricePerUnit: 300000,
+          phone: '01084148017'
+        });
       } finally {
         setIsLoading(false);
       }
@@ -65,7 +79,7 @@ const DetailPage = () => {
     return (
       <S.Container>
         <S.ContentWrapper>
-          <S.BackButton onClick={() => navigate('/')}>뒤로가기</S.BackButton>
+          <S.BackButton onClick={() => navigate('/')}>&lt;</S.BackButton>
           <S.ErrorMessage>로딩 중...</S.ErrorMessage>
         </S.ContentWrapper>
       </S.Container>
@@ -76,7 +90,7 @@ const DetailPage = () => {
     return (
       <S.Container>
         <S.ContentWrapper>
-          <S.BackButton onClick={() => navigate('/')}>뒤로가기</S.BackButton>
+          <S.BackButton onClick={() => navigate('/')}>&lt;</S.BackButton>
           <S.ErrorMessage>상품을 찾을 수 없습니다.</S.ErrorMessage>
         </S.ContentWrapper>
       </S.Container>
@@ -86,12 +100,13 @@ const DetailPage = () => {
   return (
     <S.Container>
       <S.ContentWrapper>
-        <S.BackButton onClick={() => navigate('/')}>뒤로가기</S.BackButton>
+        <S.BackButton onClick={() => navigate('/')}>&lt;</S.BackButton>
 
         <S.TitleSection>
           <S.ProductTitle>{product.title}</S.ProductTitle>
           <S.StatusBadge>{product.status}</S.StatusBadge>
         </S.TitleSection>
+        <S.Divider />
 
         <S.ProductImage src={product.image} alt={product.title} />
 
@@ -130,7 +145,7 @@ const DetailPage = () => {
 
         <S.ContactButton>
           <S.ContactIcon>ⓘ</S.ContactIcon>
-          <S.ContactText>기계를 원하시다면 아래 전화번호로 연락하세요!</S.ContactText>
+          <S.ContactText>거래를 원하신다면 아래 전화번호로 연락하세요!</S.ContactText>
         </S.ContactButton>
       </S.ContentWrapper>
     </S.Container>
