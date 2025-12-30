@@ -1,5 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Icon } from '@iconify/react';
+import { fishermanAPI } from '../../api/fisherman';
 import * as S from './style';
 
 const REGIONS = ['서울', '부산', '인천', '제주', '여수', '통영', '목포'];
@@ -7,15 +9,45 @@ const REGIONS = ['서울', '부산', '인천', '제주', '여수', '통영', '�
 const MyPage = () => {
   const navigate = useNavigate();
   const [isEditing, setIsEditing] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  // Mock user data
   const [userData, setUserData] = useState({
+    fisherman_id: '',
     name: '김바다',
     phone: '010-1234-5678',
     region: '부산',
     totalSales: 15,
     totalRevenue: 1250000
   });
+
+  useEffect(() => {
+    const user = localStorage.getItem('user');
+    if (user) {
+      try {
+        const parsedUser = JSON.parse(user);
+        setIsLoggedIn(true);
+
+        if (parsedUser.fisherman_id) {
+          fishermanAPI.getProfile(parsedUser.fisherman_id)
+            .then(profile => {
+              setUserData({
+                fisherman_id: profile.fisherman_id,
+                name: profile.name,
+                phone: profile.phone_number,
+                region: profile.region,
+                totalSales: profile.total_sales || 0,
+                totalRevenue: profile.total_revenue || 0
+              });
+            })
+            .catch(error => {
+              console.error('Failed to fetch profile:', error);
+            });
+        }
+      } catch (error) {
+        console.error('Failed to parse user data:', error);
+      }
+    }
+  }, []);
 
   const [editData, setEditData] = useState({
     name: userData.name,
@@ -36,13 +68,34 @@ const MyPage = () => {
     setIsEditing(false);
   };
 
-  const handleSave = () => {
-    setUserData({
-      ...userData,
-      ...editData
-    });
-    setIsEditing(false);
-    alert('프로필이 수정되었습니다!');
+  const handleSave = async () => {
+    try {
+      await fishermanAPI.updateProfile(userData.fisherman_id, {
+        name: editData.name,
+        phone_number: editData.phone,
+        region: editData.region
+      });
+
+      setUserData({
+        ...userData,
+        name: editData.name,
+        phone: editData.phone,
+        region: editData.region
+      });
+
+      const user = localStorage.getItem('user');
+      if (user) {
+        const parsedUser = JSON.parse(user);
+        parsedUser.name = editData.name;
+        localStorage.setItem('user', JSON.stringify(parsedUser));
+      }
+
+      setIsEditing(false);
+      alert('프로필이 수정되었습니다!');
+    } catch (error) {
+      alert('프로필 수정에 실패했습니다.');
+      console.error('Failed to update profile:', error);
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -52,6 +105,22 @@ const MyPage = () => {
       [name]: value
     }));
   };
+
+  if (!isLoggedIn) {
+    return (
+      <S.Container>
+        <S.LoginPrompt>
+          <S.LoginIcon>
+            <Icon icon="material-symbols:account-circle" width="120" height="120" color="#9CA3AF" />
+          </S.LoginIcon>
+          <S.LoginText>로그인이 필요한 서비스입니다</S.LoginText>
+          <S.LoginButton onClick={() => navigate('/login')}>
+            로그인하기
+          </S.LoginButton>
+        </S.LoginPrompt>
+      </S.Container>
+    );
+  }
 
   return (
     <S.Container>

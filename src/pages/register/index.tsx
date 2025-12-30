@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { fishermanAPI } from '../../api/fisherman';
 import * as S from './style';
 
 const REGIONS = ['서울', '부산', '인천', '제주', '여수', '통영', '목포'];
@@ -22,7 +23,7 @@ const RegisterPage = () => {
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (formData.password !== formData.confirmPassword) {
@@ -30,10 +31,19 @@ const RegisterPage = () => {
       return;
     }
 
-    console.log('Register:', formData);
-    // TODO: API call
-    alert('어민 등록이 완료되었습니다!');
-    navigate('/login');
+    try {
+      await fishermanAPI.register({
+        name: formData.name,
+        phone_number: formData.phone,
+        region: formData.region,
+        password: formData.password
+      });
+      alert('어민 등록이 완료되었습니다!');
+      navigate('/login');
+    } catch (error) {
+      alert('등록에 실패했습니다. 다시 시도해주세요.');
+      console.error('Register error:', error);
+    }
   };
 
   return (
