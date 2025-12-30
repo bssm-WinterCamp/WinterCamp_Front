@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Icon } from '@iconify/react';
+import { recordAPI } from '../../api/record';
+import { fileAPI } from '../../api/file';
 import * as S from './style';
 
 const SEAFOOD_TYPES = [
@@ -12,12 +14,13 @@ const WritePage = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: '',
-    weight: '',
     quantity: '',
     price: '',
     description: ''
   });
   const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [imageUrl, setImageUrl] = useState<string>('');
+  const [isUploading, setIsUploading] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -27,26 +30,72 @@ const WritePage = () => {
     }));
   };
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+      // 미리보기 설정
       const reader = new FileReader();
       reader.onloadend = () => {
         setImagePreview(reader.result as string);
       };
       reader.readAsDataURL(file);
+
+      // 서버에 이미지 업로드
+      try {
+        setIsUploading(true);
+        const uploadResult = await fileAPI.uploadImage(file);
+        setImageUrl(uploadResult.url);
+        console.log('Image uploaded:', uploadResult.url);
+      } catch (error) {
+        console.error('Image upload failed:', error);
+        alert('이미지 업로드에 실패했습니다. 다시 시도해주세요.');
+        setImagePreview(null);
+      } finally {
+        setIsUploading(false);
+      }
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!imagePreview) {
+
+    if (!imageUrl) {
       alert('사진을 등록해주세요!');
       return;
     }
-    console.log('등록:', formData, '이미지:', imagePreview);
-    alert('수산물이 등록되었습니다!');
-    navigate('/work-log');
+
+    if (isUploading) {
+      alert('이미지 업로드 중입니다. 잠시만 기다려주세요.');
+      return;
+    }
+
+    const user = localStorage.getItem('user');
+    if (!user) {
+      alert('로그인이 필요합니다.');
+      navigate('/login');
+      return;
+    }
+
+    try {
+      const userData = JSON.parse(user);
+
+      await recordAPI.register({
+        fisherman_id: userData.fisherman_id,
+        name: formData.name,
+        type: '물고기',
+        quantity: parseInt(formData.quantity),
+        unit: '마리',
+        price: parseInt(formData.price),
+        description: formData.description,
+        image_url: imageUrl
+      });
+
+      alert('수산물이 등록되었습니다!');
+      navigate('/work-log');
+    } catch (error) {
+      alert('등록에 실패했습니다. 다시 시도해주세요.');
+      console.error('Register record error:', error);
+    }
   };
 
   return (
@@ -66,8 +115,9 @@ const WritePage = () => {
                 <S.ChangeImageButton
                   type="button"
                   onClick={() => document.getElementById('imageInput')?.click()}
+                  disabled={isUploading}
                 >
-                  사진 변경
+                  {isUploading ? '업로드 중...' : '사진 변경'}
                 </S.ChangeImageButton>
               </S.ImagePreview>
             ) : (
@@ -76,7 +126,7 @@ const WritePage = () => {
                   <S.UploadIcon>
                     <Icon icon="material-symbols:photo-camera-outline" width="60" height="60" />
                   </S.UploadIcon>
-                  <S.UploadText>사진을 선택해주세요</S.UploadText>
+                  <S.UploadText>{isUploading ? '업로드 중...' : '사진을 선택해주세요'}</S.UploadText>
                 </S.UploadPlaceholder>
               </S.ImageUploadLabel>
             )}
@@ -85,6 +135,7 @@ const WritePage = () => {
               type="file"
               accept="image/*"
               onChange={handleImageChange}
+              disabled={isUploading}
             />
           </S.ImageUploadWrapper>
         </S.Section>
@@ -102,18 +153,6 @@ const WritePage = () => {
               <option key={type} value={type}>{type}</option>
             ))}
           </S.Select>
-        </S.Section>
-
-        <S.Section>
-          <S.Label>무게</S.Label>
-          <S.Input
-            type="text"
-            name="weight"
-            placeholder="예: 2kg"
-            value={formData.weight}
-            onChange={handleChange}
-            required
-          />
         </S.Section>
 
         <S.Section>

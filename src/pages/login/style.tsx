@@ -97,7 +97,7 @@ export const Input = styled.input`
 
   &:focus {
     outline: none;
-    border-color: #2C5F7E;
+    border-color: #FF6B6B;
     background: #FFFFFF;
   }
 
@@ -112,7 +112,7 @@ export const SubmitButton = styled.button`
   font-size: 19px;
   font-weight: 800;
   border-radius: 8px;
-  background: #2C5F7E;
+  background: #FF6B6B;
   color: #FFFFFF;
   border: none;
   cursor: pointer;
@@ -121,7 +121,7 @@ export const SubmitButton = styled.button`
   font-family: 'Paperlogy', sans-serif;
 
   &:hover {
-    background: #1E4A5F;
+    background: #FF5252;
   }
 
   &:active {

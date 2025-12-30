@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Icon } from '@iconify/react';
+import { foodAPI } from '../../api/food';
 import * as S from './style';
 
 interface SeafoodProduct {
@@ -90,8 +91,60 @@ const WorkLogPage = () => {
   const navigate = useNavigate();
   const [selectedCategory, setSelectedCategory] = useState('물고기');
   const [searchQuery, setSearchQuery] = useState('');
+  const [products, setProducts] = useState<SeafoodProduct[]>(MOCK_PRODUCTS);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const filteredProducts = MOCK_PRODUCTS.filter(product =>
+  useEffect(() => {
+    const fetchProducts = async () => {
+      const user = localStorage.getItem('user');
+      if (user) {
+        try {
+          setIsLoading(true);
+          const userData = JSON.parse(user);
+          const region = userData.region || '부산';
+
+          const foodList = await foodAPI.getLocalFood(region);
+
+          const transformedProducts: SeafoodProduct[] = foodList.map(food => ({
+            id: food.food_id,
+            title: food.name,
+            category: getCategoryFromType(food.type),
+            image: food.image_url || 'https://images.unsplash.com/photo-1544943910-4c1dc44aab44?w=400',
+            status: food.status,
+            fisherman: food.fisherman_name,
+            location: food.region,
+            hashtag: food.hashtag || '',
+            date: new Date(food.created_at).toLocaleDateString('ko-KR', {
+              year: 'numeric',
+              month: '2-digit',
+              day: '2-digit'
+            }).replace(/\. /g, '.').replace(/\.$/, '')
+          }));
+
+          setProducts(transformedProducts);
+        } catch (error) {
+          console.error('Failed to fetch products:', error);
+          setProducts(MOCK_PRODUCTS);
+        } finally {
+          setIsLoading(false);
+        }
+      }
+    };
+
+    fetchProducts();
+  }, []);
+
+  const getCategoryFromType = (type: string): string => {
+    const categoryMap: { [key: string]: string } = {
+      '물고기': '물고기',
+      '연체류': '연체류',
+      '갑각류': '갑각류',
+      '해조류': '해조류'
+    };
+    return categoryMap[type] || '물고기';
+  };
+
+  const filteredProducts = products.filter(product =>
     product.category === selectedCategory &&
     (searchQuery === '' || product.title.includes(searchQuery))
   );
@@ -128,7 +181,9 @@ const WorkLogPage = () => {
       <S.ListTitle>수산물 리스트</S.ListTitle>
 
       <S.ProductGrid>
-        {filteredProducts.length > 0 ? (
+        {isLoading ? (
+          <S.EmptyMessage>로딩 중...</S.EmptyMessage>
+        ) : filteredProducts.length > 0 ? (
           filteredProducts.map(product => (
             <S.ProductCard
               key={product.id}

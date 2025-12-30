@@ -1,55 +1,76 @@
+import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { foodAPI } from '../../api/food';
 import * as S from './style';
 
-const MOCK_PRODUCTS = [
-  {
-    id: 1,
-    title: '성상한 광어 30마리 팝니다.',
-    category: '물고기',
-    image: 'https://images.unsplash.com/photo-1544943910-4c1dc44aab44?w=800',
-    status: 'S급 물고기',
-    fisherman: '김어민',
-    location: '부산광역시 기장군',
-    hashtag: '해피해피해피마을',
-    date: '2025.08.27',
-    quantity: '30마리',
-    pricePerUnit: 300000,
-    phone: '01084148017'
-  },
-  {
-    id: 2,
-    title: '성상한 광어 30마리 팝니다.',
-    category: '물고기',
-    image: 'https://images.unsplash.com/photo-1544943910-4c1dc44aab44?w=800',
-    status: 'S급 물고기',
-    fisherman: '김어민',
-    location: '부산광역시 기장군',
-    hashtag: '해피해피해피마을',
-    date: '2025.08.27',
-    quantity: '30마리',
-    pricePerUnit: 300000,
-    phone: '01084148017'
-  },
-  {
-    id: 3,
-    title: '성상한 광어 30마리 팝니다.',
-    category: '물고기',
-    image: 'https://images.unsplash.com/photo-1544943910-4c1dc44aab44?w=800',
-    status: 'S급 물고기',
-    fisherman: '김어민',
-    location: '부산광역시 기장군',
-    hashtag: '해피해피해피마을',
-    date: '2025.08.27',
-    quantity: '30마리',
-    pricePerUnit: 300000,
-    phone: '01084148017'
-  }
-];
+interface ProductDetail {
+  id: number;
+  title: string;
+  category: string;
+  image: string;
+  status: string;
+  fisherman: string;
+  location: string;
+  hashtag: string;
+  date: string;
+  quantity: string;
+  pricePerUnit: number;
+  phone: string;
+}
 
 const DetailPage = () => {
   const navigate = useNavigate();
   const { id } = useParams();
-  const product = MOCK_PRODUCTS.find(p => p.id === Number(id));
+  const [product, setProduct] = useState<ProductDetail | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchProductDetail = async () => {
+      if (!id) return;
+
+      try {
+        setIsLoading(true);
+        const detail = await foodAPI.getFoodDetail(Number(id));
+
+        setProduct({
+          id: detail.food_id,
+          title: detail.name,
+          category: detail.type,
+          image: detail.image_url || 'https://images.unsplash.com/photo-1544943910-4c1dc44aab44?w=800',
+          status: detail.status,
+          fisherman: detail.fisherman_name,
+          location: detail.region,
+          hashtag: detail.hashtag || '',
+          date: new Date(detail.created_at).toLocaleDateString('ko-KR', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit'
+          }).replace(/\. /g, '.').replace(/\.$/, ''),
+          quantity: `${detail.quantity}${detail.unit}`,
+          pricePerUnit: detail.price,
+          phone: detail.phone_number
+        });
+      } catch (error) {
+        console.error('Failed to fetch product detail:', error);
+        setProduct(null);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchProductDetail();
+  }, [id]);
+
+  if (isLoading) {
+    return (
+      <S.Container>
+        <S.ContentWrapper>
+          <S.BackButton onClick={() => navigate('/')}>뒤로가기</S.BackButton>
+          <S.ErrorMessage>로딩 중...</S.ErrorMessage>
+        </S.ContentWrapper>
+      </S.Container>
+    );
+  }
 
   if (!product) {
     return (

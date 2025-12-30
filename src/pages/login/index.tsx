@@ -1,11 +1,12 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { authAPI } from '../../api/auth';
 import * as S from './style';
 
 const LoginPage = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    phone: '',
+    id: '',
     password: ''
   });
 
@@ -17,11 +18,19 @@ const LoginPage = () => {
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Login:', formData);
-    // TODO: API call
-    navigate('/');
+    try {
+      const response = await authAPI.login({
+        id: formData.id,
+        pw: formData.password
+      });
+      alert(`환영합니다, ${response.name}님!`);
+      navigate('/');
+    } catch (error) {
+      alert('로그인에 실패했습니다. 아이디와 비밀번호를 확인해주세요.');
+      console.error('Login error:', error);
+    }
   };
 
   return (
@@ -34,12 +43,12 @@ const LoginPage = () => {
 
         <S.Form onSubmit={handleSubmit}>
           <S.InputGroup>
-            <S.Label>전화번호</S.Label>
+            <S.Label>아이디</S.Label>
             <S.Input
-              type="tel"
-              name="phone"
-              placeholder="010-1234-5678"
-              value={formData.phone}
+              type="text"
+              name="id"
+              placeholder="아이디를 입력하세요"
+              value={formData.id}
               onChange={handleChange}
               required
             />
@@ -50,7 +59,7 @@ const LoginPage = () => {
             <S.Input
               type="password"
               name="password"
-              placeholder="비밀번호"
+              placeholder="비밀번호를 입력하세요"
               value={formData.password}
               onChange={handleChange}
               required

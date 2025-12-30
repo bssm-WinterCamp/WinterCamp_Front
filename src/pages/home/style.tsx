@@ -39,14 +39,15 @@ export const AuthLink = styled.div`
 `;
 
 export const ProfileIcon = styled.div`
-  width: 56px;
-  height: 56px;
-  border-radius: 50%;
-  background: #D1D5DB;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 32px;
+  color: #9CA3AF;
+  cursor: pointer;
+
+  &:hover {
+    color: #FF6B6B;
+  }
 `;
 
 export const ChartSection = styled.div`

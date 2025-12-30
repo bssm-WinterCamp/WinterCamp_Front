@@ -63,7 +63,7 @@ export const ProfileName = styled.h2`
 
 export const ProfileDetail = styled.div`
   font-size: 18px;
-  font-weight: 500;
+  font-weight: 700;
   color: rgba(255, 255, 255, 0.9);
   margin-bottom: 6px;
   font-family: 'Paperlogy', sans-serif;
@@ -241,7 +241,9 @@ export const LoginPrompt = styled.div`
 `;
 
 export const LoginIcon = styled.div`
-  font-size: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   margin-bottom: 24px;
 `;
 
@@ -259,4 +261,17 @@ export const LoginButton = styled.button`
   font-weight: 800;
   border-radius: 12px;
   min-height: 56px;
+  background: #F3F4F6;
+  color: #2C3E50;
+  border: none;
+  cursor: pointer;
+  font-family: 'Paperlogy', sans-serif;
+
+  &:hover {
+    background: #E5E7EB;
+  }
+
+  &:active {
+    transform: scale(0.98);
+  }
 `;
