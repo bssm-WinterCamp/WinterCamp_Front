@@ -7,12 +7,14 @@ import * as S from './style';
 const HomePage = () => {
   const navigate = useNavigate();
   const [userName, setUserName] = useState('guest');
-  const [recommendedProduct, setRecommendedProduct] = useState({
-    id: 1,
-    name: '광어',
-    image: 'https://images.unsplash.com/photo-1544943910-4c1dc44aab44?w=800',
-    description: '싱싱한 광어 30마리가 왔어요! 싱싱도 60인! 좋은 상태로 기계 구매하려 1개로 한정되어 있으며, 기존 구매 어려워 입지하는 컬리전인 가격대로 제공되고 있어 최적의 선택입니다!'
-  });
+  const [recommendedProduct, setRecommendedProduct] = useState<{
+    id: number;
+    name: string;
+    image: string;
+    description: string;
+  } | null>(null);
+  const [analysis, setAnalysis] = useState<string | null>(null);
+  const [noRecommendMessage, setNoRecommendMessage] = useState<string | null>(null);
 
   useEffect(() => {
     const user = localStorage.getItem('user');
@@ -24,7 +26,17 @@ const HomePage = () => {
         if (userData.user_id) {
           aiAPI.getRecommendations(userData.user_id)
             .then(response => {
-              if (response.recommendations && response.recommendations.length > 0) {
+              if (response.message) {
+                // 구매 내역이 없는 경우
+                setNoRecommendMessage(response.message);
+                setRecommendedProduct(null);
+                setAnalysis(null);
+              } else if (response.recommendations && response.recommendations.length > 0) {
+                // 구매 내역이 있는 경우
+                setNoRecommendMessage(null);
+                if (response.analysis) {
+                  setAnalysis(response.analysis);
+                }
                 const firstRecommend = response.recommendations[0];
                 setRecommendedProduct({
                   id: firstRecommend.food_id,
@@ -95,13 +107,22 @@ const HomePage = () => {
 
       <S.RecommendSection>
         <S.RecommendTitle>오늘의 추천 상품</S.RecommendTitle>
-        <S.RecommendCard onClick={() => navigate(`/detail/1`)}>
-          <S.RecommendImage src={recommendedProduct.image} alt={recommendedProduct.name} />
-          <S.RecommendName>{recommendedProduct.name}</S.RecommendName>
-        </S.RecommendCard>
-        <S.RecommendDescription>
-          {recommendedProduct.description}
-        </S.RecommendDescription>
+        {noRecommendMessage ? (
+          <S.NoRecommendMessage>{noRecommendMessage}</S.NoRecommendMessage>
+        ) : recommendedProduct ? (
+          <>
+            {analysis && <S.AnalysisText>{analysis}</S.AnalysisText>}
+            <S.RecommendCard onClick={() => navigate(`/detail/${recommendedProduct.id}`)}>
+              <S.RecommendImage src={recommendedProduct.image} alt={recommendedProduct.name} />
+              <S.RecommendName>{recommendedProduct.name}</S.RecommendName>
+            </S.RecommendCard>
+            <S.RecommendDescription>
+              {recommendedProduct.description}
+            </S.RecommendDescription>
+          </>
+        ) : (
+          <S.NoRecommendMessage>추천 상품을 불러오는 중입니다...</S.NoRecommendMessage>
+        )}
       </S.RecommendSection>
     </S.Container>
   );

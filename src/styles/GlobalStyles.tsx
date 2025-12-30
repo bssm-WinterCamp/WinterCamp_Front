@@ -3,7 +3,12 @@ import { Global, css } from '@emotion/react';
 const GlobalStyles = () => (
   <Global
     styles={css`
-      @import url('https://fastly.jsdelivr.net/gh/projectnoonnu/2408-3@1.0/Paperlogy-8ExtraBold.woff2');
+      @font-face {
+        font-family: 'Paperlogy';
+        src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/2408-3@1.0/Paperlogy-8ExtraBold.woff2') format('woff2');
+        font-weight: 800;
+        font-style: normal;
+      }
 
       :root {
         font-family: 'Paperlogy', -apple-system, BlinkMacSystemFont, system-ui, Roboto, 'Helvetica Neue', 'Segoe UI', 'Apple SD Gothic Neo', 'Noto Sans KR', 'Malgun Gothic', sans-serif;
