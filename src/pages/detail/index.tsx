@@ -145,12 +145,8 @@ const DetailPage = () => {
             <S.InfoValue>{product.date}</S.InfoValue>
           </S.InfoRow>
           <S.InfoRow>
-            <S.InfoLabel>지역</S.InfoLabel>
-            <S.InfoValue>{product.location}</S.InfoValue>
-          </S.InfoRow>
-          <S.InfoRow>
             <S.InfoLabel>소속 어촌</S.InfoLabel>
-            <S.InfoValue>{product.group}</S.InfoValue>
+            <S.InfoValue>{product.location}</S.InfoValue>
           </S.InfoRow>
           <S.InfoRow>
             <S.PhoneLabel>전화번호</S.PhoneLabel>
