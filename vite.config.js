@@ -30,6 +30,12 @@ export default defineConfig({
         target: 'https://winter.zuu3.kr',
         changeOrigin: true,
         secure: false
+      },
+      '/cdn': {
+        target: 'https://cdn.zuu3.kr',
+        changeOrigin: true,
+        secure: false,
+        rewrite: (path) => path.replace(/^\/cdn/, '')
       }
     }
   }

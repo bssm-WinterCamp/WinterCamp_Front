@@ -1,4 +1,5 @@
 import styled from '@emotion/styled';
+import { keyframes } from '@emotion/react';
 
 export const Container = styled.div`
   min-height: 100vh;
@@ -115,6 +116,113 @@ export const Select = styled.select`
   option {
     font-size: 18px;
     font-weight: 500;
+  }
+`;
+
+export const DropdownWrapper = styled.div`
+  position: relative;
+`;
+
+export const CustomDropdown = styled.div`
+  width: 100%;
+  padding: 18px 20px;
+  font-size: 18px;
+  font-weight: 600;
+  border: 2px solid #D1D5DB;
+  border-radius: 8px;
+  background-color: #FFFFFF;
+  color: #2C3E50;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: 'Paperlogy', sans-serif;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  user-select: none;
+  outline: none;
+  min-height: 56px;
+
+  &:hover {
+    border-color: #FF6B6B;
+  }
+  
+  &:focus {
+    outline: none;
+  }
+`;
+
+export const DropdownLabel = styled.span`
+  color: #2C3E50;
+  font-weight: 600;
+`;
+
+export const DropdownArrow = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #6B7280;
+`;
+
+export const DropdownList = styled.div`
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  right: 0;
+  background: #FFFFFF;
+  border: 2px solid #D1D5DB;
+  border-radius: 8px;
+  max-height: 280px;
+  overflow-y: auto;
+  z-index: 100;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  animation: ${keyframes`
+    from {
+      opacity: 0;
+      transform: translateY(-8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  `} 0.2s ease-out;
+
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: #F3F4F6;
+    border-radius: 10px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #D1D5DB;
+    border-radius: 10px;
+
+    &:hover {
+      background: #9CA3AF;
+    }
+  }
+`;
+
+export const DropdownItem = styled.div<{ active?: boolean }>`
+  padding: 18px 20px;
+  font-size: 18px;
+  font-weight: 600;
+  font-family: 'Paperlogy', sans-serif;
+  color: ${props => props.active ? '#FF6B6B' : '#2C3E50'};
+  background: ${props => props.active ? '#FFF5F5' : '#FFFFFF'};
+  cursor: pointer;
+  transition: all 0.15s;
+  border-bottom: 1px solid #F3F4F6;
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  &:hover {
+    background: #FFF5F5;
+    color: #FF6B6B;
   }
 `;
 

@@ -2,8 +2,9 @@ import apiClient from './client';
 
 export interface FishermanRegisterRequest {
   name: string;
-  phone_number: string;
+  phoneNumber: string;
   region: string;
+  group: string;
   password: string;
 }
 
