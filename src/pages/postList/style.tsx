@@ -271,6 +271,21 @@ export const ProductImage = styled.img`
   object-fit: cover;
 `;
 
+export const NoImageText = styled.div`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #F3F4F6;
+  color: #9CA3AF;
+  font-size: 14px;
+  font-weight: 600;
+  font-family: 'Paperlogy', sans-serif;
+  text-align: center;
+  padding: 20px;
+`;
+
 export const StatusBadge = styled.div`
   position: absolute;
   top: 12px;

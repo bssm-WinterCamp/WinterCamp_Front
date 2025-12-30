@@ -44,7 +44,7 @@ interface SeafoodProduct {
   id: number;
   title: string;
   category: string;
-  image: string;
+  image: string | null;
   status: string;
   fisherman: string;
   location: string;
@@ -158,7 +158,7 @@ const PostListPage = () => {
             id: food.id,
             title: food.name,
             category: getCategoryFromType(food.type),
-            image: 'https://images.unsplash.com/photo-1544943910-4c1dc44aab44?w=400',
+            image: food.image_url,
             status: '수량중',
             fisherman: food.user_name,
             location: food.group_region,
@@ -316,7 +316,11 @@ const PostListPage = () => {
               onClick={() => handleProductClick(product.id)}
             >
               <S.ProductImageWrapper>
-                <S.ProductImage src={product.image} alt={product.title} />
+                {product.image ? (
+                  <S.ProductImage src={product.image} alt={product.title} />
+                ) : (
+                  <S.NoImageText>이미지가 존재하지 않습니다</S.NoImageText>
+                )}
                 <S.StatusBadge>{product.status}</S.StatusBadge>
               </S.ProductImageWrapper>
               <S.ProductInfo>

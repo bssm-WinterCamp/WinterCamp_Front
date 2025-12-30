@@ -197,3 +197,38 @@ export const ContactText = styled.div`
   text-align: center;
   font-family: 'Paperlogy', sans-serif;
 `;
+
+export const NoImageContainer = styled.div`
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  border-radius: 12px;
+  margin-bottom: 32px;
+  background: #F3F4F6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+export const NoImageText = styled.div`
+  font-size: 18px;
+  font-weight: 600;
+  color: #9CA3AF;
+  font-family: 'Paperlogy', sans-serif;
+`;
+
+export const DescriptionSection = styled.div`
+  background: #F9FAFB;
+  padding: 20px;
+  border-radius: 12px;
+  margin-bottom: 24px;
+  border: 1px solid #E5E7EB;
+`;
+
+export const DescriptionText = styled.p`
+  font-size: 16px;
+  font-weight: 500;
+  color: #4B5563;
+  font-family: 'Paperlogy', sans-serif;
+  line-height: 1.6;
+  margin: 0;
+`;

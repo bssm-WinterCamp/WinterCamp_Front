@@ -12,6 +12,7 @@ export interface Food {
   description: string;
   amount: string;
   created_at: string;
+  image_url: string | null;
 }
 
 export interface FoodDetail {
@@ -34,6 +35,8 @@ export interface FoodDetail {
   quantity: number;
   unit: string;
   phone_number: string;
+  group: string;
+  phoneNumber: string;
 }
 
 export interface OrderRequest {
