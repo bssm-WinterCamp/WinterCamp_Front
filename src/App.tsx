@@ -5,7 +5,7 @@ import HomePage from './pages/home'
 import WritePage from './pages/write'
 import MyPage from './pages/myPage'
 import DetailPage from './pages/detail'
-import WorkLogPage from './pages/workLog'
+import PostListPage from './pages/postList'
 import LoginPage from './pages/login'
 import RegisterPage from './pages/register'
 
@@ -21,7 +21,7 @@ function App() {
             <Route path="/register" element={<RegisterPage />} />
             <Route path="/detail/:id" element={<DetailPage />} />
             <Route path="/write" element={<WritePage />} />
-            <Route path="/work-log" element={<WorkLogPage />} />
+            <Route path="/work-log" element={<PostListPage />} />
             <Route path="/mypage" element={<MyPage />} />
           </Route>
         </Routes>
