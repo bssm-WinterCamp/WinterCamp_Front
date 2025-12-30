@@ -2,13 +2,20 @@
 
 :root {
   font-family: 'Paperlogy', system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
+  line-height: 1.6;
   font-weight: 400;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+  /* Enhanced contrast for elderly users */
+  --color-primary: #0066FF;
+  --color-text-primary: #1A1A1A;
+  --color-text-secondary: #555555;
+  --color-background: #FFFFFF;
+  --color-border: #E0E0E0;
 }
 
 * {
@@ -50,22 +57,29 @@ h1 {
 }
 
 button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
+  border-radius: 12px;
+  border: 2px solid transparent;
+  padding: 14px 24px;
+  font-size: 18px;
+  font-weight: 700;
+  font-family: 'Paperlogy', inherit;
+  background-color: #0066FF;
+  color: #FFFFFF;
   cursor: pointer;
-  transition: border-color 0.25s;
+  transition: all 0.2s;
+  min-height: 48px;
+  /* Ensure touch targets are at least 48px for accessibility */
 }
 button:hover {
-  border-color: #646cff;
+  background-color: #0052CC;
+}
+button:active {
+  transform: scale(0.96);
 }
 button:focus,
 button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+  outline: 3px solid #0066FF;
+  outline-offset: 2px;
 }
 
 @media (prefers-color-scheme: light) {
