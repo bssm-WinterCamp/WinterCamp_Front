@@ -13,8 +13,8 @@ export const ContentWrapper = styled.div`
 export const BackButton = styled.button`
   background: none;
   border: none;
-  color: #FF6B6B;
-  font-size: 20px;
+  color: #2C3E50;
+  font-size: 32px;
   font-weight: 700;
   cursor: pointer;
   font-family: 'Paperlogy', sans-serif;
@@ -36,9 +36,13 @@ export const TitleSection = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
+  margin-bottom: 16px;
+`;
+
+export const Divider = styled.div`
+  height: 3px;
+  background: #4A90E2;
   margin-bottom: 20px;
-  padding-bottom: 16px;
-  border-bottom: 1px solid #E5E7EB;
 `;
 
 export const ProductTitle = styled.h2`
@@ -192,4 +196,39 @@ export const ContactText = styled.div`
   color: #FFFFFF;
   text-align: center;
   font-family: 'Paperlogy', sans-serif;
+`;
+
+export const NoImageContainer = styled.div`
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  border-radius: 12px;
+  margin-bottom: 32px;
+  background: #F3F4F6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+export const NoImageText = styled.div`
+  font-size: 18px;
+  font-weight: 600;
+  color: #9CA3AF;
+  font-family: 'Paperlogy', sans-serif;
+`;
+
+export const DescriptionSection = styled.div`
+  background: #F9FAFB;
+  padding: 20px;
+  border-radius: 12px;
+  margin-bottom: 24px;
+  border: 1px solid #E5E7EB;
+`;
+
+export const DescriptionText = styled.p`
+  font-size: 16px;
+  font-weight: 500;
+  color: #4B5563;
+  font-family: 'Paperlogy', sans-serif;
+  line-height: 1.6;
+  margin: 0;
 `;

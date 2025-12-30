@@ -6,16 +6,41 @@ export default defineConfig({
   plugins: [react()],
   server: {
     proxy: {
-      '/api': {
+      '/food': {
         target: 'https://winter.zuu3.kr',
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api/, ''),
-        secure: false,
+        secure: false
       },
-      '/file': {
+      '/fisherman': {
+        target: 'https://winter.zuu3.kr',
+        changeOrigin: true,
+        secure: false
+      },
+      '/record': {
+        target: 'https://winter.zuu3.kr',
+        changeOrigin: true,
+        secure: false
+      },
+      '/auth': {
+        target: 'https://winter.zuu3.kr',
+        changeOrigin: true,
+        secure: false
+      },
+      '/user': {
+        target: 'https://winter.zuu3.kr',
+        changeOrigin: true,
+        secure: false
+      },
+      '/ai': {
+        target: 'https://winter.zuu3.kr',
+        changeOrigin: true,
+        secure: false
+      },
+      '/cdn': {
         target: 'https://cdn.zuu3.kr',
         changeOrigin: true,
         secure: false,
+        rewrite: (path) => path.replace(/^\/cdn/, '')
       }
     }
   }

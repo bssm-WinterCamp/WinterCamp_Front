@@ -12,9 +12,11 @@ export interface Food {
   description: string;
   amount: string;
   created_at: string;
+  image_url: string | null;
 }
 
 export interface FoodDetail {
+  food_id: number;
   remain: number;
   price: number;
   user_name: string;
@@ -23,8 +25,18 @@ export interface FoodDetail {
   type: string;
   fresh: string;
   description: string;
-  amount: string;
+  amount: number;
   created_at: string;
+  image_url?: string;
+  status: string;
+  fisherman_name: string;
+  region: string;
+  hashtag?: string;
+  quantity: number;
+  unit: string;
+  phone_number: string;
+  group: string;
+  phoneNumber: string;
 }
 
 export interface OrderRequest {
@@ -41,15 +53,15 @@ export interface OrderResponse {
 
 export const foodAPI = {
   getLocalFood: async (region: string): Promise<Food[]> => {
-    const response = await apiClient.get('/food/local', {
-      params: { region }
+    const response = await apiClient.post('/food/local', {
+      region
     });
     return response.data;
   },
 
   getFoodDetail: async (food_id: number): Promise<FoodDetail> => {
-    const response = await apiClient.get('/food/detail', {
-      params: { food_id }
+    const response = await apiClient.post('/food/detail', {
+      food_id
     });
     return response.data;
   },

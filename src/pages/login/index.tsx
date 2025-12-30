@@ -1,10 +1,12 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { authAPI } from '../../api/auth';
+import { useUserStore } from '../../store';
 import * as S from './style';
 
 const LoginPage = () => {
   const navigate = useNavigate();
+  const setUser = useUserStore((state) => state.setUser);
   const [formData, setFormData] = useState({
     id: '',
     password: ''
@@ -25,6 +27,16 @@ const LoginPage = () => {
         id: formData.id,
         pw: formData.password
       });
+      
+      // Zustand store에 사용자 정보 저장
+      setUser({
+        id: response.id,
+        name: response.name,
+        phoneNumber: response.phoneNumber,
+        role: response.role,
+        fisherman_id: response.fisherman_id
+      });
+      
       alert(`환영합니다, ${response.name}님!`);
       navigate('/');
     } catch (error) {

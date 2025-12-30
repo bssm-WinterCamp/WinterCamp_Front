@@ -3,17 +3,21 @@ import { useNavigate } from 'react-router-dom';
 import { Icon } from '@iconify/react';
 import { aiAPI } from '../../api/ai';
 import fishData from '../../data/fishData.json';
+import { useUserStore } from '../../store';
 import * as S from './style';
 
 const HomePage = () => {
   const navigate = useNavigate();
+  const user = useUserStore((state) => state.user);
   const [userName, setUserName] = useState('guest');
-  const [recommendedProduct, setRecommendedProduct] = useState({
-    id: 1,
-    name: '광어',
-    image: 'https://images.unsplash.com/photo-1544943910-4c1dc44aab44?w=800',
-    description: '싱싱한 광어 30마리가 왔어요! 싱싱도 60인! 좋은 상태로 기계 구매하려 1개로 한정되어 있으며, 기존 구매 어려워 입지하는 컬리전인 가격대로 제공되고 있어 최적의 선택입니다!'
-  });
+  const [isAILoading, setIsAILoading] = useState(false);
+  const [recommendedProduct, setRecommendedProduct] = useState<{
+    id: number;
+    name: string;
+    description: string;
+  } | null>(null);
+  const [analysis, setAnalysis] = useState<string | null>(null);
+  const [noRecommendMessage, setNoRecommendMessage] = useState<string | null>(null);
 
   useEffect(() => {
     const user = localStorage.getItem('user');
@@ -22,21 +26,35 @@ const HomePage = () => {
         const userData = JSON.parse(user);
         setUserName(userData.name || 'guest');
 
-        if (userData.user_id) {
-          aiAPI.getRecommendations(userData.user_id)
+        if (userData.id) {
+          setIsAILoading(true);
+          aiAPI.getRecommendations(userData.id)
             .then(response => {
-              if (response.recommendations && response.recommendations.length > 0) {
+              if (response.message) {
+                // 구매 내역이 없는 경우
+                setNoRecommendMessage(response.message);
+                setRecommendedProduct(null);
+                setAnalysis(null);
+              } else if (response.recommendations && response.recommendations.length > 0) {
+                // 구매 내역이 있는 경우
+                setNoRecommendMessage(null);
+                if (response.analysis) {
+                  setAnalysis(response.analysis);
+                }
                 const firstRecommend = response.recommendations[0];
                 setRecommendedProduct({
                   id: firstRecommend.food_id,
                   name: firstRecommend.name,
-                  image: 'https://images.unsplash.com/photo-1544943910-4c1dc44aab44?w=800',
                   description: firstRecommend.reason
                 });
               }
             })
             .catch(error => {
               console.error('Failed to fetch AI recommendations:', error);
+              setNoRecommendMessage('추천 상품을 불러오는데 실패했습니다.');
+            })
+            .finally(() => {
+              setIsAILoading(false);
             });
         }
       } catch (error) {
@@ -134,13 +152,13 @@ const HomePage = () => {
         <S.WelcomeSection>
           <S.WelcomeText>{userName} 님</S.WelcomeText>
           <S.WelcomeText>어서오세요.</S.WelcomeText>
-          {userName === 'guest' && (
-            <S.AuthLink onClick={() => navigate('/login')}>
+          {user?.role !== 'fisherman' && (
+            <S.AuthLink onClick={() => navigate('/register')}>
               어민이세요? 인증하러 가기
             </S.AuthLink>
           )}
         </S.WelcomeSection>
-        <S.ProfileIcon onClick={() => navigate('/my-page')}>
+        <S.ProfileIcon onClick={() => navigate('/mypage')}>
           <Icon icon="material-symbols:account-circle" width="56" height="56" />
         </S.ProfileIcon>
       </S.Header>
@@ -195,13 +213,25 @@ const HomePage = () => {
 
       <S.RecommendSection>
         <S.RecommendTitle>오늘의 추천 상품</S.RecommendTitle>
-        <S.RecommendCard onClick={() => navigate(`/detail/1`)}>
-          <S.RecommendImage src={recommendedProduct.image} alt={recommendedProduct.name} />
-          <S.RecommendName>{recommendedProduct.name}</S.RecommendName>
-        </S.RecommendCard>
-        <S.RecommendDescription>
-          {recommendedProduct.description}
-        </S.RecommendDescription>
+        {isAILoading ? (
+          <S.LoadingContainer>
+            <S.Spinner />
+          </S.LoadingContainer>
+        ) : noRecommendMessage ? (
+          <S.NoRecommendMessage>{noRecommendMessage}</S.NoRecommendMessage>
+        ) : recommendedProduct ? (
+          <>
+            {analysis && <S.AnalysisText>{analysis}</S.AnalysisText>}
+            <S.RecommendCard onClick={() => navigate(`/detail/${recommendedProduct.id}`)}>
+              <S.RecommendName>{recommendedProduct.name}</S.RecommendName>
+            </S.RecommendCard>
+            <S.RecommendDescription>
+              {recommendedProduct.description}
+            </S.RecommendDescription>
+          </>
+        ) : (
+          <S.NoRecommendMessage>로그인하면 AI 추천을 받을 수 있습니다.</S.NoRecommendMessage>
+        )}
       </S.RecommendSection>
     </S.Container>
   );

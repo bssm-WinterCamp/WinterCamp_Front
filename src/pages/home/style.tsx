@@ -324,3 +324,49 @@ export const RecommendDescription = styled.p`
   font-family: 'Paperlogy', sans-serif;
   line-height: 1.6;
 `;
+
+export const NoRecommendMessage = styled.div`
+  font-size: 16px;
+  font-weight: 600;
+  color: #FF6B6B;
+  font-family: 'Paperlogy', sans-serif;
+  text-align: center;
+  padding: 40px 20px;
+  background: #FEF2F2;
+  border-radius: 12px;
+  border: 2px solid #FEE2E2;
+`;
+
+export const AnalysisText = styled.div`
+  font-size: 14px;
+  font-weight: 500;
+  color: #059669;
+  font-family: 'Paperlogy', sans-serif;
+  padding: 12px 16px;
+  background: #ECFDF5;
+  border-radius: 8px;
+  border: 1px solid #D1FAE5;
+  margin-bottom: 16px;
+  line-height: 1.5;
+`;
+
+export const LoadingContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px 0;
+`;
+
+export const Spinner = styled.div`
+  width: 40px;
+  height: 40px;
+  border: 4px solid #E5E7EB;
+  border-top-color: #FF6B6B;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+`;

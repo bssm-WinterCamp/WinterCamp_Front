@@ -27,6 +27,11 @@ export const NavItem = styled.button<{ active?: boolean }>`
   padding: 8px 10px;
   flex: 1;
   min-height: auto;
+  outline: none;
+  
+  &:focus {
+    outline: none;
+  }
 `;
 
 export const NavLabel = styled.div<{ active?: boolean }>`

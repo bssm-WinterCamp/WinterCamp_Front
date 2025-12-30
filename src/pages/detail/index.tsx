@@ -7,15 +7,16 @@ interface ProductDetail {
   id: number;
   title: string;
   category: string;
-  image: string;
+  image: string | null;
   status: string;
   fisherman: string;
   location: string;
-  hashtag: string;
+  group: string;
   date: string;
   quantity: string;
   pricePerUnit: number;
   phone: string;
+  description: string;
 }
 
 const DetailPage = () => {
@@ -36,23 +37,39 @@ const DetailPage = () => {
           id: detail.food_id,
           title: detail.name,
           category: detail.type,
-          image: detail.image_url || 'https://images.unsplash.com/photo-1544943910-4c1dc44aab44?w=800',
-          status: detail.status,
-          fisherman: detail.fisherman_name,
-          location: detail.region,
-          hashtag: detail.hashtag || '',
+          image: detail.image_url || null,
+          status: `${detail.fresh}급 ${detail.type}`,
+          fisherman: detail.user_name,
+          location: detail.group_region,
+          group: detail.group || '',
           date: new Date(detail.created_at).toLocaleDateString('ko-KR', {
             year: 'numeric',
             month: '2-digit',
             day: '2-digit'
           }).replace(/\. /g, '.').replace(/\.$/, ''),
-          quantity: `${detail.quantity}${detail.unit}`,
+          quantity: `${detail.remain}개`,
           pricePerUnit: detail.price,
-          phone: detail.phone_number
+          phone: detail.phoneNumber || '',
+          description: detail.description
         });
       } catch (error) {
         console.error('Failed to fetch product detail:', error);
-        setProduct(null);
+        // 임시 목업 데이터 사용
+        setProduct({
+          id: Number(id),
+          title: '싱싱한 광어 3마리 팝니다.',
+          category: '물고기',
+          image: null,
+          status: 'S급 물고기',
+          fisherman: '김어민',
+          location: '부산광역시 기장군',
+          group: '해피해피해피마을',
+          date: '2025.08.27',
+          quantity: '수량 3마리',
+          pricePerUnit: 300000,
+          phone: '01084148017',
+          description: '신선한 수산물입니다.'
+        });
       } finally {
         setIsLoading(false);
       }
@@ -65,7 +82,7 @@ const DetailPage = () => {
     return (
       <S.Container>
         <S.ContentWrapper>
-          <S.BackButton onClick={() => navigate('/')}>뒤로가기</S.BackButton>
+          <S.BackButton onClick={() => navigate('/')}>&lt;</S.BackButton>
           <S.ErrorMessage>로딩 중...</S.ErrorMessage>
         </S.ContentWrapper>
       </S.Container>
@@ -76,7 +93,7 @@ const DetailPage = () => {
     return (
       <S.Container>
         <S.ContentWrapper>
-          <S.BackButton onClick={() => navigate('/')}>뒤로가기</S.BackButton>
+          <S.BackButton onClick={() => navigate('/')}>&lt;</S.BackButton>
           <S.ErrorMessage>상품을 찾을 수 없습니다.</S.ErrorMessage>
         </S.ContentWrapper>
       </S.Container>
@@ -86,14 +103,27 @@ const DetailPage = () => {
   return (
     <S.Container>
       <S.ContentWrapper>
-        <S.BackButton onClick={() => navigate('/')}>뒤로가기</S.BackButton>
+        <S.BackButton onClick={() => navigate('/')}>&lt;</S.BackButton>
 
         <S.TitleSection>
           <S.ProductTitle>{product.title}</S.ProductTitle>
           <S.StatusBadge>{product.status}</S.StatusBadge>
         </S.TitleSection>
+        <S.Divider />
 
-        <S.ProductImage src={product.image} alt={product.title} />
+        {product.image ? (
+          <S.ProductImage src={product.image} alt={product.title} />
+        ) : (
+          <S.NoImageContainer>
+            <S.NoImageText>이미지가 존재하지 않습니다</S.NoImageText>
+          </S.NoImageContainer>
+        )}
+
+        {product.description && (
+          <S.DescriptionSection>
+            <S.DescriptionText>{product.description}</S.DescriptionText>
+          </S.DescriptionSection>
+        )}
 
         <S.PriceSection>
           <S.PriceLabel>가격</S.PriceLabel>
@@ -115,12 +145,8 @@ const DetailPage = () => {
             <S.InfoValue>{product.date}</S.InfoValue>
           </S.InfoRow>
           <S.InfoRow>
-            <S.InfoLabel>지역</S.InfoLabel>
-            <S.InfoValue>{product.location}</S.InfoValue>
-          </S.InfoRow>
-          <S.InfoRow>
             <S.InfoLabel>소속 어촌</S.InfoLabel>
-            <S.InfoValue>{product.hashtag}</S.InfoValue>
+            <S.InfoValue>{product.location}</S.InfoValue>
           </S.InfoRow>
           <S.InfoRow>
             <S.PhoneLabel>전화번호</S.PhoneLabel>
@@ -130,7 +156,7 @@ const DetailPage = () => {
 
         <S.ContactButton>
           <S.ContactIcon>ⓘ</S.ContactIcon>
-          <S.ContactText>기계를 원하시다면 아래 전화번호로 연락하세요!</S.ContactText>
+          <S.ContactText>거래를 원하신다면 아래 전화번호로 연락하세요!</S.ContactText>
         </S.ContactButton>
       </S.ContentWrapper>
     </S.Container>

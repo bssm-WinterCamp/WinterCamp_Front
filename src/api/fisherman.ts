@@ -1,10 +1,11 @@
 import apiClient from './client';
 
 export interface FishermanRegisterRequest {
-  name: string;
-  phone_number: string;
+  user_id: number;
+  group: string;
   region: string;
-  password: string;
+  phoneNumber: string;
+  image: string;
 }
 
 export interface FishermanRegisterResponse {
@@ -13,18 +14,18 @@ export interface FishermanRegisterResponse {
 }
 
 export interface FishermanProfile {
-  fisherman_id: string;
-  name: string;
-  phone_number: string;
+  group: string;
   region: string;
-  total_sales?: number;
-  total_revenue?: number;
+  name: string;
+  phoneNumber: string;
 }
 
 export interface FishermanUpdateRequest {
-  name: string;
-  phone_number: string;
+  group: string;
   region: string;
+  phoneNumber: string;
+  name: string;
+  image: string;
 }
 
 export const fishermanAPI = {
